@@ -5,7 +5,7 @@ class ProductManager {
     
     getProducts =()=>{
         console.log(this.product);
-        return;
+        return this.product;
     }
 
     chekProduct =(code)=>{
