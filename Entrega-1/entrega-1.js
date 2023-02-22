@@ -26,7 +26,7 @@ class ProductManager {
         const valid = title === undefined || description === undefined 
         const error = this.chekProduct(code)
         if(error) {
-            return console.log('che el codigo esta repetido!!!!!!');
+            return console.log('che el codigo esta repetido!!!!!!!!');
         } 
 
         const products ={
