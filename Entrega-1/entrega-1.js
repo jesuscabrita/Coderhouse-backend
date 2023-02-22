@@ -23,7 +23,6 @@ class ProductManager {
     }
 
     addProduct =(title, description, price, thumbnail , code, stock)=>{
-        const valid = title === undefined || description === undefined 
         const error = this.chekProduct(code)
         if(error) {
             return console.log('che el codigo esta repetido!!!!!!!!');
@@ -33,13 +32,25 @@ class ProductManager {
             id: this.product.length + 1,
             title,
             description,
-            price : price ?? 200,
-            thumbnail : thumbnail ?? 'Sin imagen',
-            code : code ?? 'abc123',
-            stock : stock ?? 25,
+            price,
+            thumbnail,
+            code,
+            stock,
         }
-        if ( valid) {
-            return console.log(`debes rellenar los campos en el producto con el id ${products.id}`);
+        if ( title === undefined) {
+            return console.log(`debes rellenar el titulo del producto ${products.id}`);
+        }
+        if(description === undefined){
+            return console.log(`debes rellenar la descripcion del producto ${products.id}`);
+        }
+        if(price === undefined){
+            return console.log(`debes rellenar el precio del producto ${products.id}`);
+        }
+        if(thumbnail === undefined){
+            return console.log(`debes rellenar la thumbnail del producto ${products.id}`);
+        }
+        if(stock === undefined){
+            return console.log(`debes rellenar el stock del producto ${products.id}`);
         }
         return this.product.push(products)
     }
@@ -48,6 +59,6 @@ class ProductManager {
 const productManager = new ProductManager();
 productManager.addProduct('arroz','amarillo', 500, null, '12345', 50);
 productManager.addProduct('Queso','Verde', null, null, '1234', 41);
-productManager.addProduct();
+productManager.addProduct('sal','verde');
 productManager.getProductById()
 productManager.getProducts();
