@@ -18,14 +18,16 @@ class ProductManager {
         if (filter.length === 0){
             console.log('no se encontro el producto seleccionado!!!!');
         }
-        return  console.log(filter);
+        console.log(filter);
+        return  filter
     }
 
     addProduct =(title, description, price, thumbnail , code, stock)=>{
+        const valid = title === undefined || description === undefined 
         const error = this.chekProduct(code)
         if(error) {
             return console.log('che el codigo esta repetido!!!!!!');
-        }
+        } 
 
         const products ={
             id: this.product.length + 1,
@@ -36,12 +38,16 @@ class ProductManager {
             code : code ?? 'abc123',
             stock : stock ?? 25,
         }
-        this.product.push(products)
+        if ( valid) {
+            return console.log(`debes rellenar los campos en el producto con el id ${products.id}`);
+        }
+        return this.product.push(products)
     }
 }
 
 const productManager = new ProductManager();
 productManager.addProduct('arroz','amarillo', 500, null, '12345', 50);
 productManager.addProduct('Queso','Verde', null, null, '1234', 41);
+productManager.addProduct();
 productManager.getProductById()
-// productManager.getProducts();
+productManager.getProducts();
