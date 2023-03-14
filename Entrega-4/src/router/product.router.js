@@ -50,7 +50,7 @@ router.post("/", uploader.single("thumbnail"), (req, res) => {
             product.stock,
             product.category
         );
-    return res.status(200).send({ status: 'Succes', message:'Se creo el producto correctamente' });
+    return res.status(200).send({ status: 'Succes', message:'Se creo el producto correctamente', product });
 } catch (err) {
     return res
     .status(400)
@@ -59,7 +59,7 @@ router.post("/", uploader.single("thumbnail"), (req, res) => {
 });
 
 router.put("/:id",uploader.single("thumbnail"), (req, res) => {
-    const productId = req.params.id;
+    const productId = Number(req.params.id);
     const changes = req.body;
     const filename = req?.file?.filename;
     const productIndex =  productManager.getProducts().findIndex((u) => u.id == productId);
@@ -80,7 +80,7 @@ router.put("/:id",uploader.single("thumbnail"), (req, res) => {
 
     return res
         .status(200)
-        .send({ status: "OK", message: `Producto se edito correctamente` });
+        .send({ status: "OK", message: `Producto se edito correctamente`, changes });
 });
 
 router.delete("/:id", (req, res) => {
@@ -90,13 +90,13 @@ router.delete("/:id", (req, res) => {
     if (productIndex === -1) {
         return res
         .status(404)
-        .send({ status: "Error", message: "producto no existe" });
+        .send({ status: "Error", message: `el producto ${productId} no existe` });
     }
 
     productManager.getProducts().splice(productIndex, 1);
     return res
         .status(200)
-        .send({ status: "Sucess", message: "Producto eliminado con exito!!" });
+        .send({ status: "Sucess", message: `Producto ${productId} fue eliminado con exito!!` });
 });
 
 export default router;

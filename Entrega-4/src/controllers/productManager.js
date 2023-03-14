@@ -34,7 +34,7 @@ class ProductManager {
             price,
             thumbnail,
             code,
-            stock ,
+            stock,
             status : stock < 1 ? false : true ,
             category : category,
         }
