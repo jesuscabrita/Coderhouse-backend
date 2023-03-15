@@ -1,34 +1,45 @@
+import fs from "fs";
+import __dirname from "../utils.js";
+
 class ProductManager {
     constructor(){
-        this.product = [];
+        this.productJSON = __dirname + "/files/Products.json"
     }
     
-    getProducts =()=>{
-        console.log(this.product);
-        return this.product;
+    getProducts = async()=>{
+        if (fs.existsSync(this.productJSON)) {
+            const data = await fs.promises.readFile(this.productJSON, "utf-8");
+            const result = JSON.parse(data);
+            return result;
+        } else {
+            return [];
+        }
     }
 
-    chekProduct =(code)=>{
-        const  error = this.product.find((pro) => pro.code === code)
+    chekProduct = async (code)=>{
+        const productos = await this.getProducts()
+        const  error = productos.find((pro) => pro.code === code)
         return error;
     }
 
-    getProductById (id){
-        const filter =  this.product.filter((product) => {return product.id == id})
+    getProductById = async (id) =>{
+        const productos = await this.getProducts()
+        const filter =  productos.filter((product) => {return product.id == id})
         if (filter.length === 0){
             throw new Error ('no se encontro el producto seleccionado!!!!')
         }
         return  filter
     }
 
-    addProduct =(title, description, price, thumbnail , code, stock,category)=>{
-        const error = this.chekProduct(code)
+    addProduct = async (title, description, price, thumbnail , code, stock,category)=>{
+        const productos = await this.getProducts()
+        const error = await this.chekProduct(code)
         if(error) {
             throw new Error ('che el codigo esta repetido!!!!!!!!');
         } 
 
         const products ={
-            id: this.product.length + 1,
+            id: productos.length + 1,
             title,
             description,
             price,
@@ -56,7 +67,32 @@ class ProductManager {
         if(category === undefined){
             throw new Error (`debes rellenar el category del producto ${products.id}`);
         }
-        return this.product.push(products)
+        productos?.push(products)
+        await fs.promises.writeFile(
+            this.productJSON,
+            JSON.stringify(productos, null, "\t")
+            );
+            return products; 
+    }
+
+    editarProducto= async(id, changes)=>{
+        const productos = await this.getProducts()
+        productos[id] = changes
+        await fs.promises.writeFile(
+            this.productJSON,
+            JSON.stringify(productos, null, "\t")
+            );
+            return productos[id];
+    }
+
+    eliminarProducto= async(id)=>{
+        const productos = await this.getProducts()
+        productos.splice(id, 1);
+        await fs.promises.writeFile(
+            this.productJSON,
+            JSON.stringify(productos, null, "\t")
+            );
+            return `Se elimino el producto ${id} correctamente`;
     }
 }
 export default ProductManager;

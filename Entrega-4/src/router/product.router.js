@@ -3,14 +3,7 @@ import ProductManager from '../controllers/productManager.js'
 import { uploader } from "../utils.js";
 
 const router = express.Router();
-
 const productManager = new ProductManager();
-productManager.addProduct('arroz','amarillo', 500, null, '12345', 50,'comida');
-productManager.addProduct('Queso','Verde', null, null, '12344',0, 'comida');
-productManager.addProduct('sal','verde', 500, null, '123453', 50,'comida');
-productManager.addProduct('Pera','amarillo', 500, null, '123452', 50, 'comida');
-productManager.addProduct('Manzana','Verde', null, null, '123433', 41, 'comida');
-productManager.addProduct('Galletitas','verde', 500, null, '1234544', 1, 'comida');
 
 router.get("/", async (req, res) => {
     const limit = req.query.limit;
@@ -29,7 +22,7 @@ router.get("/:pid", async (req, res) => {
     return res.send({producto});
 });
 
-router.post("/", uploader.single("thumbnail"), (req, res) => {
+router.post("/", uploader.single("thumbnail"), async(req, res) => {
     
     try{ 
         const product = req.body;
@@ -41,7 +34,7 @@ router.post("/", uploader.single("thumbnail"), (req, res) => {
                 .send({ status: "Error", error: "No se envio niguna imagen!!" });
             }
 
-        productManager.addProduct(
+        await productManager.addProduct(
             product.title,
             product.description, 
             product.price, 
@@ -58,11 +51,12 @@ router.post("/", uploader.single("thumbnail"), (req, res) => {
 }
 });
 
-router.put("/:id",uploader.single("thumbnail"), (req, res) => {
+router.put("/:id",uploader.single("thumbnail"),async (req, res) => {
     const productId = Number(req.params.id);
     const changes = req.body;
     const filename = req?.file?.filename;
-    const productIndex =  productManager.getProducts().findIndex((u) => u.id == productId);
+    const productos = await productManager.getProducts()
+    const productIndex = productos.findIndex((u) => u.id == productId);
     changes.id = productId
     changes.thumbnail = `http://localhost:8080/images/${filename}`
 
@@ -75,25 +69,25 @@ router.put("/:id",uploader.single("thumbnail"), (req, res) => {
     if (productIndex === -1) {
         return res.status(404).send({ status: "Error", message: "Producto no encontrado!!" });
     }
-
-    productManager.product[productIndex] = changes
+    await productManager.editarProducto(productIndex, changes)
 
     return res
         .status(200)
         .send({ status: "OK", message: `Producto se edito correctamente`, changes });
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id",async (req, res) => {
     const productId = req.params.id;
-    const productIndex = productManager.getProducts().findIndex((u) => u.id == productId);
+    const productos = await productManager.getProducts()
+    const productIndex = productos.findIndex((u) => u.id == productId);
 
     if (productIndex === -1) {
         return res
         .status(404)
         .send({ status: "Error", message: `el producto ${productId} no existe` });
     }
-
-    productManager.getProducts().splice(productIndex, 1);
+    await productManager.eliminarProducto(productIndex)
+    
     return res
         .status(200)
         .send({ status: "Sucess", message: `Producto ${productId} fue eliminado con exito!!` });

@@ -1,54 +1,62 @@
+import fs from "fs";
+import __dirname from "../utils.js";
 class CartsManager {
     constructor(){
-        this.cart = [];
-        this.product = [];
+        this.cartJSON = __dirname + "/files/Carts.json"
+        this.productJSON = __dirname + "/files/Carts.json"
     }
     
-    getcarts =()=>{
-        console.log(this.cart);
-        return this.cart;
+    getcarts = async()=>{
+        if (fs.existsSync(this.cartJSON)) {
+            const data = await fs.promises.readFile(this.cartJSON, "utf-8");
+            const result = JSON.parse(data);
+            return result;
+        } else {
+            return [];
+        }
     }
-    getProduct =()=>{
-        console.log(this.product);
-        return this.product;
+    getProduct = async ()=>{
+        if (fs.existsSync(this.productJSON)) {
+            const data = await fs.promises.readFile(this.productJSON, "utf-8");
+            const result = JSON.parse(data);
+            return result;
+        } else {
+            return [];
+        }
     }
 
-    getcartById (id){
-        const filter =  this.cart.filter((cart) => {return cart.id == id})
+    getcartById = async(id) =>{
+        const carritos = await this.getcarts()
+        const filter =  carritos.filter((cart) => {return cart.id == id})
         if (filter.length === 0){
             throw new Error ('no se encontro el carrito seleccionado!!!!')
         }
         return  filter
     }
 
-    getProductById (id){
-        const filter =  this.product.filter((product) => {return product.id == id})
+    getProductById = async(id) =>{
+        const productos = await this.getProduct()
+        const filter =  productos.filter((product) => {return product.id == id})
         if (filter.length === 0){
             throw new Error ('no se encontro el producto seleccionado!!!!')
         }
         return  filter
     }
 
-    addcart =(products)=>{
+    addcart = async(cart)=>{
+        const carritos = await this.getcarts()
         const carts ={
-            id: this.cart.length + 1,
-            products: products = [],
+            id: carritos.length + 1,
+            products: cart = [],
         }
-        return this.cart.push(carts)
+        carritos?.push(carts)
+        await fs.promises.writeFile(
+            this.cartJSON,
+            JSON.stringify(carritos, null, "\t")
+            );
+
+            return carts; 
     }
 
-    addproduct =(quantity, idProduct)=>{
-        const producto = this.cart[idProduct]
-
-        const product ={
-            id: this.product.length + 1 ,
-            quantity,
-        }
-
-        if ( quantity === undefined) {
-            throw new Error (`debes rellenar el quantity del producto ${product.id}`) 
-        }
-        return producto.push(product)
-    }
 }
 export default CartsManager;

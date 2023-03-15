@@ -1,0 +1,24 @@
+[
+	{
+		"title": "tele",
+		"description": "42 pulgadas",
+		"price": "568995",
+		"code": "g555",
+		"stock": "0",
+		"status": "false",
+		"category": "electro",
+		"id": 1,
+		"thumbnail": "http://localhost:8080/images/1678893831384-back01.jpg"
+	},
+	{
+		"id": 2,
+		"title": "palmerita",
+		"description": "playera",
+		"price": "100000",
+		"thumbnail": "http://localhost:8080/images/1678893808307-jonas-verstuyft-Pp6efQ_ghiA-unsplash.jpg",
+		"code": "SINCODIGO2",
+		"stock": "5",
+		"status": true,
+		"category": "playa"
+	}
+]
