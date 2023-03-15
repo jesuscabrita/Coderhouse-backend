@@ -37,13 +37,17 @@ router.post("/:cid/product/:pid", async (req, res) => {
         const carritos = await cartManager.getcarts()
         product.id = productID
         product.quantity
-
         const indiceCart = carritos.findIndex((e) => e.id == carritoID)
         const indiceProduct = carritos[indiceCart].products.findIndex((e) => e.id == productID)
 
-        if(indiceProduct !== -1){
+        if(!product.quantity){
             carritos[indiceCart].products[indiceProduct].quantity ++
-        }else{
+        }
+        if(indiceProduct !== -1){
+            console.log('paso2');
+            carritos[indiceCart].products[indiceProduct].quantity += product.quantity
+        }
+        else{
             carritos[indiceCart].products.push(product)
         }
 

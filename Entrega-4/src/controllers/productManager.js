@@ -43,7 +43,7 @@ class ProductManager {
             title,
             description,
             price,
-            thumbnail,
+            thumbnail:[thumbnail],
             code,
             stock,
             status : stock < 1 ? false : true ,
@@ -58,9 +58,9 @@ class ProductManager {
         if(price === undefined){
             throw new Error (`debes rellenar el precio del producto ${products.id}`);
         }
-        if(thumbnail === undefined){
-            throw new Error (`debes rellenar la thumbnail del producto ${products.id}`);
-        }
+        // if(thumbnail === undefined){
+        //     throw new Error (`debes rellenar la thumbnail del producto ${products.id}`);
+        // }
         if(stock === undefined){
             throw new Error (`debes rellenar el stock del producto ${products.id}`);
         }

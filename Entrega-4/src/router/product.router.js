@@ -28,17 +28,17 @@ router.post("/", uploader.single("thumbnail"), async(req, res) => {
         const product = req.body;
         const filename = req?.file?.filename;
 
-        if (!filename) {
-            return res
-                .status(400)
-                .send({ status: "Error", error: "No se envio niguna imagen!!" });
-            }
+        // if (!filename) {
+        //     return res
+        //         .status(400)
+        //         .send({ status: "Error", error: "No se envio niguna imagen!!" });
+        //     }
 
         await productManager.addProduct(
             product.title,
             product.description, 
             product.price, 
-            product.thumbnail =  `http://localhost:8080/images/${filename}` , 
+            filename?  product.thumbnail =  `http://localhost:8080/images/${filename}` : null , 
             product.code, 
             product.stock,
             product.category
@@ -58,7 +58,7 @@ router.put("/:id",uploader.single("thumbnail"),async (req, res) => {
     const productos = await productManager.getProducts()
     const productIndex = productos.findIndex((u) => u.id == productId);
     changes.id = productId
-    changes.thumbnail = `http://localhost:8080/images/${filename}`
+    changes.thumbnail = [`http://localhost:8080/images/${filename}`]
 
     if (!filename) {
         return res
