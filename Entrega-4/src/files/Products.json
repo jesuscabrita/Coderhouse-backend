@@ -5,35 +5,22 @@
 		"description": "playera",
 		"price": "100000",
 		"thumbnail": [
-			"http://localhost:8080/images/1678910639275-jonas-verstuyft-Pp6efQ_ghiA-unsplash.jpg"
+			"http://localhost:8080/images/1678915074871-jonas-verstuyft-Pp6efQ_ghiA-unsplash.jpg"
 		],
-		"code": "SINCODIGO1",
+		"code": "SINCODIGO2",
 		"stock": "5",
 		"status": true,
 		"category": "playa"
 	},
 	{
-		"title": "tele LG",
-		"description": "42 pulgadas",
-		"price": "568995",
-		"code": "g555",
-		"stock": "0",
-		"status": "false",
-		"category": "electro",
 		"id": 2,
-		"thumbnail": [
-			"http://localhost:8080/images/1678910790167-back01.jpg"
-		]
-	},
-	{
-		"id": 3,
 		"title": "palmerita 3",
 		"description": "playera",
 		"price": "100000",
 		"thumbnail": [
 			null
 		],
-		"code": "SINCODIGO3",
+		"code": "SINCODIGO1",
 		"stock": "5",
 		"status": true,
 		"category": "playa"
