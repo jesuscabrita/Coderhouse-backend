@@ -25,7 +25,7 @@ socket.on('updateProducts', (producto) => {
                 justify-content: center;
                 height: 300px;
                 background: #f0f0f0">
-            <img style="width: 100%;max-height: 100%;" src=${element.thumbnail} alt="">
+            <img style="width: 100%;max-height: 100%;" src=${element.thumbnail} alt=${element.title}>
         </div>
         <div style="padding: 30px;">
             <span style="
