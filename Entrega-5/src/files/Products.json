@@ -13,33 +13,7 @@
 		"category": "playa"
 	},
 	{
-		"title": "tele Motorola",
-		"description": "42 pulgadas",
-		"price": "568995",
-		"code": "g55584566",
-		"stock": "0",
-		"status": "false",
-		"category": "electro",
 		"id": 2,
-		"thumbnail": [
-			"http://localhost:8080/images/1679448907214-back01.jpg"
-		]
-	},
-	{
-		"id": 3,
-		"title": "martillo",
-		"description": "clavos y martillo",
-		"price": "800",
-		"thumbnail": [
-			"http://localhost:8080/images/1679446774344-martillo-carpintero-stanley-51271-D_NQ_NP_607618-MLV26988783339_032018-F-1.jpg"
-		],
-		"code": "SINCODIGO400",
-		"stock": "605",
-		"status": true,
-		"category": "herramientas"
-	},
-	{
-		"id": 4,
 		"title": "martillo",
 		"description": "clavos y martillo",
 		"price": "800",
@@ -59,9 +33,22 @@
 		"stock": "0",
 		"status": "false",
 		"category": "electro",
-		"id": 5,
+		"id": 3,
 		"thumbnail": [
 			"http://localhost:8080/images/1679448951733-back01.jpg"
 		]
+	},
+	{
+		"id": 4,
+		"title": "huevos",
+		"description": "de gallina",
+		"price": "360",
+		"thumbnail": [
+			"http://localhost:8080/images/1679449849999-descarga.jpeg"
+		],
+		"code": "SINCODIGO800",
+		"stock": "605",
+		"status": true,
+		"category": "Comida"
 	}
 ]
