@@ -79,7 +79,7 @@ class ProductManager {
 
     editarProducto = async (id, changes) => {
         const productos = await this.getProducts();
-        const productIndex = productos.findIndex((product) => product.id === id);
+        const productIndex = productos.findIndex((product) => product.id == id);
 
         if (productIndex === -1) {
             throw new Error(`No se encontró el producto con ID ${id}`);
@@ -104,7 +104,7 @@ class ProductManager {
 
     eliminarProducto = async (id) => {
         const productos = await this.getProducts();
-        const index = productos.findIndex((p) => p.id === id);
+        const index = productos.findIndex((p) => p.id == id);
 
         if (index === -1) {
             throw new Error(`No se encontró el producto con ID ${id}`);

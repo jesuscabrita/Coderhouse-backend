@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
-import ProductManager from "./dao/fileManagers/productManager.js";
+import { ProductsDataBase } from "./controllers/products.js";
 
 const socket = {};
-const productManager = new ProductManager();
+const productDataBase = new ProductsDataBase();
 
 socket.connect = async(httpServer) => {
     socket.io = new Server(httpServer);
@@ -10,32 +10,32 @@ socket.connect = async(httpServer) => {
     let { io } = socket;
 
     io.on("connection",async (socket) => {
-        const productos = await productManager.getProducts()
+        const productos = await productDataBase.getProducts()
         console.log(`${socket.id} connected`);
 
-        socket.emit('updateProducts', productos);
+        socket.emit('newProduct', productos);
 
         socket.on('addProduct', (producto) => {
             productos.push(producto);
-            io.emit('updateProducts', productos);
+            io.emit('newProduct', productos);
         });
 
         socket.on('eliminarProducto', (productoId) => {
-            const index = productos.findIndex((producto) => producto.id === productoId);
+            const index = productos.findIndex((producto) => producto._id == productoId);
             if (index !== -1) {
                 productos.splice(index, 1);
-                io.emit('updateProducts', productos);
+                io.emit('newProduct', productos);
             }
-            io.emit('updateProducts', productos);
+            io.emit('newProduct', productos);
         });
 
         socket.on('editarProducto', (productoId) => {
-            const index = productos.findIndex((producto) => producto.id === productoId);
+            const index = productos.findIndex((producto) => producto._id == productoId);
             if (index !== -1) {
                 productos.splice(index, 1);
-                io.emit('updateProducts', productos);
+                io.emit('newProduct', productos);
             }
-            io.emit('updateProducts', productos);
+            io.emit('newProduct', productos);
         });
 
         socket.on('disconnect', () => {

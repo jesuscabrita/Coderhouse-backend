@@ -2,10 +2,11 @@ import { model, Schema } from "mongoose";
 
 const cartsCollection = "carts";
 
-const productSchema = new Schema({
-    quantity: { type: Number, required: true },
-    id: { type: Number, required: true },
-});
+const productSchema = new Schema(
+    {
+        quantity: { type: Number },
+    }
+);
 
 const cartsSchema = new Schema(
     {

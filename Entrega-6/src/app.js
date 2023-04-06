@@ -7,6 +7,7 @@ import socket from "./socket.js";
 import viewsRouter from "./router/views.router.js";
 import { PORT } from "./config.js";
 import { connectToDatabase } from "./database/database.js";
+import chatRouter from "./router/chat.router.js";
 
 const app = express();
 
@@ -20,11 +21,12 @@ app.set("view engine", "handlebars");
 
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartsRouter);
+app.use("/api/chat", chatRouter)
 app.use("/", viewsRouter);
 
 const httpServer = app.listen(PORT, () => {
     console.log(`Servidor corre en el puerto ${PORT}`);
 });
 
-connectToDatabase();
 socket.connect(httpServer)
+connectToDatabase();

@@ -1,6 +1,6 @@
 const socket = io();
 
-socket.on('updateProducts', (producto) => {
+socket.on('newProduct', (producto) => {
     const listaProductos = document.getElementById('lista-productos');
     listaProductos.innerHTML = ''
     console.log('productonuevo', producto);
@@ -56,23 +56,23 @@ socket.on('updateProducts', (producto) => {
     });
 });
 
-socket.on('updateProducts', (idProducto) => {
+socket.on('newProduct', (idProducto) => {
     const listaProductos = document.getElementById('lista-productos');
     const productos = listaProductos.children;
 
     for (let i = 0; i < productos.length; i++) {
     const producto = productos[i];
 
-    if (producto.getAttribute('data-id') === idProducto) {
+    if (producto.getAttribute('data-id') == idProducto) {
         producto.remove();
         break;
     }
     }
 });
 
-socket.on('updateProducts', (productoActualizado)=> {
+socket.on('newProduct', (productoActualizado)=> {
     const listaProductos = document.getElementById('lista-productos');
-    const productoAnterior = listaProductos.querySelector(`[data-id="${productoActualizado.id}"]`);
+    const productoAnterior = listaProductos.querySelector(`[data-id="${productoActualizado._id}"]`);
     if (productoAnterior) {
     productoAnterior.innerHTML = `
     <div style="width: 380px;position: relative;box-shadow: 0 2px 7px #dfdfdf;margin: 10px auto;background: #fafafa;">
