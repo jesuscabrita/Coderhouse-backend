@@ -5,8 +5,8 @@ import __dirname from "./utils.js";
 import handlebars from "express-handlebars";
 import socket from "./socket.js";
 import viewsRouter from "./router/views.router.js";
-import { MONGODB, PORT } from "./config.js";
-import mongoose from "mongoose";
+import { PORT } from "./config.js";
+import { connectToDatabase } from "./database/database.js";
 
 const app = express();
 
@@ -19,15 +19,12 @@ app.set("view engine", "handlebars");
 
 
 app.use("/api/products", productRouter);
-app.use("/api/carts", cartsRouter );
+app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
 
 const httpServer = app.listen(PORT, () => {
     console.log(`Servidor corre en el puerto ${PORT}`);
 });
 
-console.log(`⚛️ Conectando a la base de datos...`);
-mongoose.connect(MONGODB);
-console.log(`✅ Conectado a la base de datos: ${MONGODB}`);
-
+connectToDatabase();
 socket.connect(httpServer)

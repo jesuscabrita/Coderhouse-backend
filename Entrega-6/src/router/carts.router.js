@@ -1,6 +1,6 @@
-import  express from "express";
-import CartsManager from "../controllers/cartsManager.js";
+import express from "express";
 import fs from "fs";
+import CartsManager from "../dao/fileManagers/cartsManager.js";
 
 const router = express.Router();
 
@@ -8,63 +8,39 @@ const cartManager = new CartsManager();
 
 router.get("/:cid", async (req, res) => {
     const cid = req.params.cid;
-    const carritos = await cartManager.getcarts()
-    const cart = carritos.find((u) => u.id == cid);
-    if (!cart) return res.status(400).send({ status: "Error", error: "Carrito no encontrado" });
-    return res.status(200).send({status: 'Succes', message: 'OK', cart});
+    const cart = await cartManager.getCartById(cid);
+    if (!cart) {
+        return res.status(400).send({ status: "Error", error: "Carrito no encontrado" });
+    } else {
+        return res.status(200).send({ status: "Succes", message: "OK", cart });
+    }
 });
 
 router.post("/", async (req, res) => {
-    try{ 
-        const carrito = req.body;
-
-    await cartManager.addcart(
-            carrito.products,
-        );
-    return res.status(200).send({ status: 'Succes', message:'Se creo el carritoo correctamente' });
-} catch (err) {
-    return res
-    .status(400)
-    .send({ status: "Error", error: err.message });
-}
+    try {
+        const cartId = parseInt(req.params.id);
+        const cart = req.body;
+        cart.id = cartId;
+        const updatedCart = await cartManager.addCart(cart);
+        return res.status(201).send({ status: 'Succes', message: 'Se creo el carritoo correctamente', updatedCart });
+    } catch (err) {
+        return res.status(400).send({ status: "Error", error: err.message });
+    }
 });
 
 router.post("/:cid/product/:pid", async (req, res) => {
-    try{ 
-        const product = req.body
-        const productID = Number(req.params.pid)
-        const carritoID = Number(req.params.cid) 
-        const carritos = await cartManager.getcarts()
-        product.id = productID
-        product.quantity
-        const indiceCart = carritos.findIndex((e) => e.id == carritoID)
-        const indiceProduct = carritos[indiceCart].products.findIndex((e) => e.id == productID)
+    try {
+        const product = req.body;
+        const productID = Number(req.params.pid);
+        const carritoID = Number(req.params.cid);
+        product.id = productID;
+        
+        const cart = await cartManager.addProducts(productID, carritoID, product.quantity, product);
 
-        if(!product.quantity){
-            carritos[indiceCart].products[indiceProduct].quantity ++
-            console.log('paso1');
-        }
-        if(indiceProduct !== -1){
-            console.log('paso2');
-            carritos[indiceCart].products[indiceProduct].quantity += product.quantity
-        }
-        else{
-            carritos[indiceCart].products.push(product)
-        }
-
-        await fs.promises.writeFile(
-            cartManager.cartJSON,
-            JSON.stringify(carritos, null, "\t")
-            );
-
-        const resul = carritos[indiceCart]
-
-    return res.status(200).send({ status: 'Succes', message:'Se creo el producto correctamente', resul });
-} catch (err) {
-    return res
-    .status(400)
-    .send({ status: "Error", error: err.message });
-}
+        return res.status(201).send({ status: 'Success', message: 'Se creo el producto correctamente', result: cart });
+    } catch (err) {
+        return res.status(400).send({ status: "Error", error: err.message });
+    }
 });
 
 export default router;

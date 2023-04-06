@@ -1,94 +1,76 @@
-import  express from "express";
-import ProductManager from '../controllers/productManager.js'
+import express from "express";
 import { uploader } from "../utils.js";
+import ProductManager from "../dao/fileManagers/productManager.js";
 
 const router = express.Router();
 const productManager = new ProductManager();
 
 router.get("/", async (req, res) => {
-    const limit = req.query.limit;
-    const productos = await productManager.getProducts()
-
-    if (!limit){ 
-        return res.send({ productos });
+    try {
+        const limit = req.query.limit;
+        const productos = await productManager.getProducts(limit);
+        res.status(200).send({ productos });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: error.message });
     }
-    const productosFiltrados = productos.slice(0 , limit)
-    return res.send({ productosFiltrados });
 });
 
 router.get("/:pid", async (req, res) => {
     const pid = req.params.pid;
-    const producto = await productManager.getProductById(pid)
-    return res.send({producto});
+    try {
+        const producto = await productManager.getProductById(pid);
+        return res.status(200).send({ producto });
+    } catch (error) {
+        return res.status(404).send({ error: error.message });
+    }
 });
 
-router.post("/", uploader.single("thumbnail"), async(req, res) => {
-    try{ 
-        const product = req.body;
-        const filename = req?.file?.filename;
-
-        // if (!filename) {
-        //     return res
-        //         .status(400)
-        //         .send({ status: "Error", error: "No se envio niguna imagen!!" });
-        //     }
-
-        await productManager.addProduct(
-            product.title,
-            product.description, 
-            product.price, 
-            filename?  product.thumbnail =  [`http://localhost:8080/images/${filename}`] : [] , 
-            product.code, 
-            product.stock,
-            product.category
+router.post("/", uploader.array("thumbnail", 10), async (req, res) => {
+    try {
+        const { title, description, price, code, stock, category } = req.body;
+        const thumbnailUrl = req?.files?.map(file => `http://localhost:8080/images/${file.filename}`)
+        const newProduct = await productManager.addProduct(
+            title, description, price, thumbnailUrl, code, stock, category
         );
-    return res.status(200).send({ status: 'Succes', message:'Se creo el producto correctamente', product });
-} catch (err) {
-    return res
-    .status(400)
-    .send({ status: "Error", error: err.message });
-}
+
+        return res.status(201).send({ status: 'Succes', message: 'Se creó el producto correctamente', product: newProduct });
+    } catch (err) {
+        return res.status(400).send({ status: "Error", error: err.message });
+    }
 });
 
-router.put("/:id",uploader.single("thumbnail"),async (req, res) => {
+router.put("/:id", uploader.array("thumbnail", 10), async (req, res) => {
     const productId = Number(req.params.id);
     const changes = req.body;
-    const filename = req?.file?.filename;
-    const productos = await productManager.getProducts()
-    const productIndex = productos.findIndex((u) => u.id == productId);
-    changes.id = productId
-    changes.thumbnail = [`http://localhost:8080/images/${filename}`]
+    const thumbnailUrl = req?.files?.map(file => `http://localhost:8080/images/${file.filename}`)
 
-    if (!filename) {
-        return res
-            .status(400)
-            .send({ status: "Error", error: "No se envio niguna imagen!!" });
-        }
-
-    if (productIndex === -1) {
-        return res.status(404).send({ status: "Error", message: "Producto no encontrado!!" });
+    if (!thumbnailUrl) {
+        return res.status(400).send({ status: "Error", error: "No se envio niguna imagen!!" });
     }
-    await productManager.editarProducto(productIndex, changes)
-    return res
-        .status(200)
-        .send({ status: "OK", message: `Producto se edito correctamente`, changes });
+
+    try {
+        const updatedProduct = await productManager.editarProducto(productId, {...changes,thumbnail :thumbnailUrl,});
+
+        return res.status(200).send({ status: "OK", message: `El producto se edito correctamente`, updatedProduct });
+    } catch (error) {
+        return res.status(404).send({ status: "Error", message: error.message });
+    }
 });
 
-router.delete("/:id",async (req, res) => {
-    const productId = req.params.id;
-    const productos = await productManager.getProducts()
-    const productIndex = productos.findIndex((u) => u.id == productId);
+router.delete("/:id", async (req, res) => {
+    const productId = Number(req.params.id);
 
-    if (productIndex === -1) {
+    try {
+        const message = await productManager.eliminarProducto(productId);
         return res
-        .status(404)
-        .send({ status: "Error", message: `el producto ${productId} no existe` });
+            .status(200)
+            .send({ status: "Success", message });
+    } catch (error) {
+        return res
+            .status(404)
+            .send({ status: "Error", message: error.message });
     }
-    await productManager.eliminarProducto(productIndex)
-    
-    return res
-        .status(200)
-        .send({ status: "Sucess", message: `Producto ${productId} fue eliminado con exito!!` });
 });
 
 export default router;
