@@ -42,6 +42,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
 
         if(!product.quantity){
             carritos[indiceCart].products[indiceProduct].quantity ++
+            console.log('paso1');
         }
         if(indiceProduct !== -1){
             console.log('paso2');
