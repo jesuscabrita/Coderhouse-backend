@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { ProductsDataBase } from "../controllers/products.js";
+import { ChatDataBase } from "../controllers/chat.js";
 
 const router = Router();
 const productDataBase = new ProductsDataBase();
+const chatDataBase = new ChatDataBase()
 
 router.get("/realtimeproducts", async(req, res) => {
     const productos = await productDataBase.getProducts();
@@ -15,8 +17,8 @@ router.get("/", async(req, res) => {
 });
 
 router.get("/chat", async(req, res) => {
-    
-    res.render("chat", { title: "chat" });
+    const messages = await chatDataBase.getMessages();
+    res.render("chat", { title: "chat",messages: messages });
 });
 
 export default router;
