@@ -44,18 +44,19 @@ function sendMessage() {
 }
 
 socket.on("messageLogs", (data) => {
-    let logs = document.getElementById("messageLogs");
-
     let messages = "";
     data.forEach((message) => {
+        console.log(message)
         let userMessage = `<div style="font-weight: 800; font-size: 22px">${message.user}</div>`
-        let messageStyle = (message.user === user) ? 
-        "background-color: #3a573f; color: rgb(201, 190, 190); padding: 6px; border-radius: 8px; font-size: 18px; margin-bottom: 8px; display: flex; justify-content: end; width: 100%; display: flex; align-items: center;" : 
-        "background-color: #97ba9d; color: black; padding: 6px; border-radius: 8px; font-size: 18px; margin-bottom: 8px; display: flex; justify-content: start; width: 100%; display: flex; align-items: center;";
-        messages += `<div style="${messageStyle}">  ${userMessage} : ${message.message}</div>`;
+        let messageStyle = (message.user === user) ?
+            "background-color: #3a573f; color: rgb(201, 190, 190); padding: 6px; border-radius: 8px; font-size: 18px; margin-bottom: 8px; display: flex; justify-content: end; width: 100%; display: flex; align-items: center;" :
+            "background-color: #97ba9d; color: black; padding: 6px; border-radius: 8px; font-size: 18px; margin-bottom: 8px; display: flex; justify-content: start; width: 100%; display: flex; align-items: center;";
+        messages += `<div style="${messageStyle}"> ${userMessage} : ${message.message} <button class="deleteButton" data-message-id="${message._id}"
+        style="background: rgb(191, 93, 93);border: none; border-radius: 12px;font-size: 8px; cursor: pointer;"
+        type="button">Eliminar</button></div>`;
     });
 
-    logs.innerHTML = messages;
+    messageLogs.innerHTML = messages;
 });
 
 socket.on("userConnected", (data) => {
