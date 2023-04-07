@@ -1,83 +1,19 @@
 <h1 style="display: flex; justify-content: center;">Chat</h1>
 
 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; ">
-    {{#each messages}}
-    <div
-        style="background:#f7fdfc ;display: flex; flex-direction: column; width: 300px; gap: 20px; padding: 20px; border-radius: 14px; ">
-        <div style="background: #3a573f; color: rgb(201, 190, 190); padding: 6px; border-radius: 8px; font-size: 22px;">
-            {{message}}
-            <p style="font-size: 10px; margin-top:-2 ;">{{user}}</p>
-            <a href="/api/chat/{{_id}}" data-method="delete" data-confirm="¿Estás seguro?">
-                <button
-                    style="background: rgb(191, 93, 93);border: none; border-radius: 12px;font-size: 10px; cursor: pointer;"
-                    type="submit">Eliminar</button>
-            </a>
-        </div>
-        {{!-- <div style="background: #97ba9d; color: black; padding: 6px; border-radius: 8px; font-size: 22px;">texto
-            respuesta <p style="font-size: 10px; margin-top:-2 ;">12/12/23</p>
-        </div> --}}
+    <div style="display: flex; flex-direction: row; gap:2px;margin-bottom: 10px;">
+        <input type="text" id="chatBox" style="width: 250px; height: 30px; border-radius: 8px;" />
+        <button id="chatSumbit" type="submit" style="height: 30px; border: none; border-radius: 12px; background: #374d3b; color: white; cursor: pointer;">Enviar</button>
     </div>
-    {{/each}}
-    <form action="/api/chat" method="post">
-        <div style="display: flex; flex-direction: row; gap:2px;margin-bottom: 10px;">
-            <input name="message" id="message" type="text" style="width: 250px; height: 30px;">
-            <button type="submit"
-                style="height: 30px; border: none; border-radius: 12px; background: #374d3b; color: white; cursor: pointer;">Enviar</button>
-        </div>
-        <input id="user" name="user" type="text" placeholder="correo" style="width: 250px; height: 30px;">
-    </form>
-
 </div>
-<script>
-    const deleteButtons = document.querySelectorAll('a[data-method="delete"]');
-    deleteButtons.forEach(function (button) {
-        button.addEventListener('click', function (event) {
-            event.preventDefault();
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div style="background:#f7fdfc ;display: flex; flex-direction: column; width: 300px; gap: 20px; padding: 20px; border-radius: 14px; ">
+        <p id="messageLogs"></p>
+    </div>
+</div>
 
-            // Mostrar el mensaje de confirmación
-            if (confirm(button.getAttribute('data-confirm'))) {
-                // Enviar la solicitud DELETE
-                fetch(button.getAttribute('href'), { method: 'DELETE' })
-                    .then(function (response) {
-                        // Actualizar la página
-                        location.reload();
-                    })
-                    .catch(function (error) {
-                        console.error('Error:', error);
-                    });
-            }
-        });
-    });
 
-    const form = document.querySelector('form');
-form.addEventListener('submit', function (event) {
-    event.preventDefault();
 
-    const messageInput = document.querySelector('#message');
-    const userInput = document.querySelector('#user');
-    const message = messageInput.value.trim();
-    const user = userInput.value.trim();
-
-    if (message && user) {
-        fetch('/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                message: message,
-                user: user
-            })
-        })
-        .then(function (response) {
-            location.reload();
-        })
-        .catch(function (error) {
-            console.error('Error:', error);
-        });
-    }
-});
-
-    
-
-</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>
