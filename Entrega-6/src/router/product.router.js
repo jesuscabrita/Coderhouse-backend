@@ -1,6 +1,6 @@
 import express from "express";
 import { uploader } from "../utils.js";
-import { ProductsDataBase } from "../controllers/products.js";
+import { ProductsDataBase } from "../dao/dbManagers/products.js";
 
 const router = express.Router();
 const productDatabase = new ProductsDataBase()

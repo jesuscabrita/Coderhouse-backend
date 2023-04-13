@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { ProductsDataBase } from "../controllers/products.js";
-import { ChatDataBase } from "../controllers/chat.js";
+import { ChatDataBase } from "../dao/dbManagers/chat.js";
+import { ProductsDataBase } from "../dao/dbManagers/products.js";
 
 const router = Router();
 const productDataBase = new ProductsDataBase();

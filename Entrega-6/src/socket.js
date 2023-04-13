@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
-import { ProductsDataBase } from "./controllers/products.js";
-import { ChatDataBase } from "./controllers/chat.js";
+import { ProductsDataBase } from "./dao/dbManagers/products.js";
+import { ChatDataBase } from "./dao/dbManagers/chat.js";
 
 const socket = {};
 const messageQueue = [];

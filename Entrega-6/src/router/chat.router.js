@@ -1,5 +1,5 @@
 import express from "express";
-import { ChatDataBase } from "../controllers/chat.js";
+import { ChatDataBase } from "../dao/dbManagers/chat.js";
 
 const router = express.Router();
 const chatDatabase = new ChatDataBase();
