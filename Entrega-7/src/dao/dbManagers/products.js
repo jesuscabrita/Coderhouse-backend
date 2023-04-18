@@ -61,8 +61,8 @@ export class ProductsDataBase {
 
     getProductById = async (id) => {
         try {
-            const { payload } = await this.getProducts(); // Desestructura el array de productos de la propiedad payload del objeto devuelto por getProducts()
-            const producto = payload.find((product) => product._id == id); // Usa el método find() en el array de productos
+            const { payload } = await this.getProducts(10, 1, { _id: id });
+            const producto = payload.find((product) => product._id == id); 
             if (!producto) {
                 throw new Error('No se encontró el producto seleccionado');
             }
@@ -71,12 +71,11 @@ export class ProductsDataBase {
             console.error(error);
             throw new Error("Error al obtener el producto");
         }
-    }
+    };
 
     checkProductCode = async (code) => {
-        const products = await this.getProducts();
-        const codigoProducto = products.some(product => product.code === code);
-        return codigoProducto;
+        const product = await productsModel.findOne({ code });
+        return !!product;
     }
 
     validateProductData(title, description, price, stock, category) {
@@ -99,7 +98,7 @@ export class ProductsDataBase {
 
     addProduct = async (title, description, price, thumbnail, code, stock, category) => {
         this.validateProductData(title, description, price, stock, category);
-        const productos = await this.getProducts()
+        const { payload } = await this.getProducts()
         const codigo = await this.checkProductCode(code)
         if (codigo) {
             throw new Error(`El código "${code}" ya existe`);
@@ -114,7 +113,7 @@ export class ProductsDataBase {
             status: stock < 1 ? false : true,
             category: category.trim(),
         }
-        productos?.push(newProduct)
+        payload?.push(newProduct)
 
         await productsModel.create(newProduct)
 
@@ -122,8 +121,8 @@ export class ProductsDataBase {
     }
 
     editarProducto = async (id, changes) => {
-        const productos = await this.getProducts();
-        const productIndex = productos.findIndex((product) => product._id == id);
+        const { payload } = await this.getProducts();
+        const productIndex = payload.findIndex((product) => product._id == id);
 
         if (productIndex === -1) {
             throw new Error(`No se encontró el producto con ID ${id}`);
@@ -144,8 +143,8 @@ export class ProductsDataBase {
     }
 
     eliminarProducto = async (id) => {
-        const productos = await this.getProducts();
-        const index = productos.findIndex((p) => p._id == id);
+        const { payload } = await this.getProducts();
+        const index = payload.findIndex((p) => p._id == id);
 
         if (index === -1) {
             throw new Error(`No se encontró el producto con ID ${id}`);

@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-config();
+config(); 
 
 const checkEnv = (enVar) => {
     const envVariable = process.env[enVar];

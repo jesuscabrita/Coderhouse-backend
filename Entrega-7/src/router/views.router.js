@@ -32,14 +32,14 @@ router.get("/products", async (req, res) => {
 });
 
 router.get("/product/:pid", async (req, res) => {
-    const pid = req.params.pid;
-    const producto = await productDataBase.getProductById(pid);
-    if (!producto) {
-        return res.status(400).send({ status: "Error", error: "producto no encontrado" });
-    } else {
+    try {
+        const pid = req.params.pid;
+        const producto = await productDataBase.getProductById(pid);
         return res.render("product", { title: "Product", producto: producto });
+    } catch (error) {
+        console.error(error);
+        return res.status(404).send({ status: "Error", error: "No se encontró el producto seleccionado" });
     }
-
 });
 
 router.get("/cart/:cid", async (req, res) => {
