@@ -1,0 +1,36 @@
+
+{{#each cart.products}}
+<div class="card" style="width: 18rem; margin-bottom: 20px;">
+    <div class="card-body">
+        {{#each this.product.thumbnail}}
+        <img src="{{this}}" height="150" class="card-img-top" style="object-fit:cover" alt="..." />
+        {{/each}}
+        <h5 class="card-title">{{this.product.title}}</h5>
+        <p class="card-text">{{this.product.description}}</p>
+        <p class="card-text">{{this.product.code}}</p>
+        <p class="card-text">Cantidad: {{this.quantity}}</p>
+        <button data-productid="{{this.product._id}}" class="btn btn-primary">Añadir</button>
+    </div>
+</div>
+{{/each}}
+
+<script>
+    const buttons = document.querySelectorAll('button[data-productid]');
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const productId = button.getAttribute('data-productid');
+            addToCart(productId);
+        });
+    });
+    async function addToCart(productId) {
+        try {
+            const response = await fetch(`/api/carts/643ea185c7e647c8058a97a5/product/${productId}`, { method: 'POST' });
+            const cart = await response.json();
+            console.log('Producto agregado al carrito:', cart);
+            alert('Producto agregado al carrito');
+        } catch (error) {
+            console.error(error);
+            alert('Error al agregar el producto al carrito');
+        }
+    }
+</script>
