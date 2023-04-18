@@ -82,7 +82,7 @@
 
     async function addToCart(productId) {
         try {
-            const response = await fetch(`/api/carts/643dba555e98b49cd02fb966/product/${productId}`, { method: 'POST' });
+            const response = await fetch(`/api/carts/643ea185c7e647c8058a97a5/product/${productId}`, { method: 'POST' });
             const cart = await response.json();
             console.log('Producto agregado al carrito:', cart);
             alert('Producto agregado al carrito');

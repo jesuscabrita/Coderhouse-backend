@@ -32,44 +32,44 @@ export class CartsDataBase {
     };
 
     addProducts = async (productId, carritoId, quantity) => {
-        const carritos = await this.getCarts();
-        const indiceCart = carritos.findIndex((e) => e._id == carritoId);
-        
-        // Busca el producto en la colección de productos
-        const product = await productsModel.findById(productId);
-        
-        if (!product) {
-            throw new Error(`No se encontró el producto con id ${productId}`);
-        }
-        
-        // Busca el producto en el carrito
-        const indiceProduct = carritos[indiceCart].products.findIndex(
-            (e) => e.product.toString() == productId
-        );
-    
-        if (!quantity) {
-            quantity = 1;
-        }
-        
-        // Si el producto ya existe en el carrito, actualiza su cantidad
-        if (indiceProduct !== -1) {
-            carritos[indiceCart].products[indiceProduct].quantity += quantity;
-        } else {
-            // Si el producto no existe en el carrito, agrégalo
-            carritos[indiceCart].products.push({
-                quantity: quantity,
-                product: product.toObject()
-            });
-        }
-    
-        const updatedCart = await cartsModel.findByIdAndUpdate(
-            carritos[indiceCart]._id,
-            carritos[indiceCart],
-            { new: true }
-        );
-    
-        return updatedCart.toObject();
-};
+    const carritos = await this.getCarts();
+    const indiceCart = carritos.findIndex((e) => e._id == carritoId);
+
+    // Busca el producto en la colección de productos
+    const product = await productsModel.findById(productId);
+
+    if (!product) {
+        throw new Error(`No se encontró el producto con id ${productId}`);
+    }
+
+    // Busca el producto en el carrito
+    const indiceProduct = carritos[indiceCart].products.findIndex(
+        (e) => e.product._id.toString() == productId
+    );
+
+    if (!quantity) {
+        quantity = 1;
+    }
+
+    // Si el producto ya existe en el carrito, actualiza su cantidad
+    if (indiceProduct !== -1) {
+        carritos[indiceCart].products[indiceProduct].quantity += quantity;
+    } else {
+        // Si el producto no existe en el carrito, agrégalo
+        carritos[indiceCart].products.push({
+            quantity: quantity,
+            product: product
+        });
+    }
+
+    const updatedCart = await cartsModel.findByIdAndUpdate(
+        carritos[indiceCart]._id,
+        carritos[indiceCart],
+        { new: true }
+    );
+
+    return updatedCart.toObject();
+}
 
     eliminarProducto = async (productID, cartID) => {
         const carts = await this.getCarts();
