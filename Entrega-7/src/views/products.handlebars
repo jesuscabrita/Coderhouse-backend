@@ -1,77 +1,39 @@
 <div class="container">
     <h1>Productos</h1>
 
-    <div style="display: grid;grid-template-columns: repeat(3, 1fr);grid-gap: 0px;grid-auto-rows: minmax(100px, auto);">
+    {{#if products.length}}
+    <div class='row'>
         {{#each products}}
-        <div
-            style="width: 380px;position: relative;box-shadow: 0 2px 7px #dfdfdf;margin: 10px auto;background: #fafafa;">
-            <div style="
-                position: absolute;
-                left: 0;
-                top: 20px;
-                text-transform: uppercase;
-                font-size: 13px;
-                font-weight: 700;
-                background: red;
-                color: #fff;
-                padding: 3px 10px;">
-                Sale
-            </div>
-            <div style="display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 300px;
-                background: #f0f0f0">
-                {{#each thumbnail}}
-                <img style="width: 100%;max-height: 100%;margin-right: 10px;" src={{this}} alt="" />
-                {{/each}}
-            </div>
-            <div style="padding: 30px;">
-                <span style="
-                display: block;
-                font-size: 12px;
-                font-weight: 700;
-                text-transform: uppercase;
-                color: #ccc;">
-                    {{category}}
-                </span>
-                <h4><a href="">{{title}}</a></h4>
-                <p>{{description}}</p>
-                <div style="
-                font-weight: 500;
-                display: block;
-                text-transform: uppercase;
-                color: #363636;
-                text-decoration: none;
-                transition: 0.3s;">
-                    <div style=" font-size: 18px;color: #fbb72c;font-weight: 600;"><small>${{price}}</small></div>
-                    <div>{{code}}</div>
-                    <div>Stock: {{stock}}</div>
-                </div>
-                <button data-productid="{{_id}}">Agregar al carrito</button>
-            </div>
+        <div class='col-3'>
+            {{>product}}
         </div>
         {{/each}}
     </div>
+    {{else}}
+    <img src="https://media2.giphy.com/media/3ohzdESy4qBmm24kTu/200.webp?cid=ecf05e474end5s2eletxz5tl5rik16ewbmvoh0dnq9czs8c5&rid=200.webp&ct=g"
+        alt="Inactive">
+    <h2>sin productos</h2>
+    {{>addRecipe}}
+    {{/if}}
 
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
+    <nav style="display: flex; justify-content: end; align-items: center;" aria-label="Page navigation">
+        <ul class="pagination" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <li>Pagina: {{page}}</li>
             {{#if hasPrevPage}}
             <li class="page-item">
-                <a class="page-link" href="?page={{prevPage}}">Anterior</a>
+                <a class="btn btn-primary" href="?page={{prevPage}}">Anterior</a>
             </li>
             {{/if}}
-            <p>{{page}}</p>
             {{#if hasNextPage}}
             <li class="page-item">
-                <a class="page-link" href="?page={{nextPage}}">Siguiente</a>
+                <a class="btn btn-primary" href="?page={{nextPage}}">Siguiente</a>
             </li>
             {{/if}}
         </ul>
     </nav>
 </div>
 
-<script>
+    <script>
     const buttons = document.querySelectorAll('button[data-productid]');
     buttons.forEach(button => {
         button.addEventListener('click', () => {
@@ -79,7 +41,6 @@
             addToCart(productId);
         });
     });
-
     async function addToCart(productId) {
         try {
             const response = await fetch(`/api/carts/643ea185c7e647c8058a97a5/product/${productId}`, { method: 'POST' });
