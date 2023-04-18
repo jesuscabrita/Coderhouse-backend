@@ -55,10 +55,8 @@ router.delete("/:cid", async (req, res) => {
 
 router.delete("/:cid/products/:pid", async (req, res) => {
     try {
-        const product = req.body;
         const productID = req.params.pid;
         const carritoID = req.params.cid;
-        product.id = productID;
 
         const cart = await cartsDataBase.eliminarProducto(productID, carritoID)
 
