@@ -61,12 +61,11 @@ export class ProductsDataBase {
 
     getProductById = async (id) => {
         try {
-            const { payload } = await this.getProducts(10, 1, { _id: id });
-            const producto = payload.find((product) => product._id == id); 
+            const producto = await productsModel.findById(id);
             if (!producto) {
                 throw new Error('No se encontró el producto seleccionado');
             }
-            return producto;
+            return producto.toObject();
         } catch (error) {
             console.error(error);
             throw new Error("Error al obtener el producto");
