@@ -60,12 +60,17 @@ export class ProductsDataBase {
     };
 
     getProductById = async (id) => {
-        const productos = await this.getProducts();
-        const producto = productos.find((product) => product._id == id);
-        if (!producto) {
-            throw new Error('No se encontró el producto seleccionado');
+        try {
+            const { payload } = await this.getProducts(); // Desestructura el array de productos de la propiedad payload del objeto devuelto por getProducts()
+            const producto = payload.find((product) => product._id == id); // Usa el método find() en el array de productos
+            if (!producto) {
+                throw new Error('No se encontró el producto seleccionado');
+            }
+            return producto;
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error al obtener el producto");
         }
-        return producto;
     }
 
     checkProductCode = async (code) => {

@@ -31,6 +31,17 @@ router.get("/products", async (req, res) => {
 
 });
 
+router.get("/product/:pid", async (req, res) => {
+    const pid = req.params.pid;
+    const producto = await productDataBase.getProductById(pid);
+    if (!producto) {
+        return res.status(400).send({ status: "Error", error: "producto no encontrado" });
+    } else {
+        return res.render("product", { title: "Product", producto: producto });
+    }
+
+});
+
 router.get("/cart/:cid", async (req, res) => {
     const cid = req.params.cid;
     const cart = await cartsDataBase.getCartById(cid);
