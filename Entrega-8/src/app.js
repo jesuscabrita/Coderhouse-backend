@@ -5,9 +5,13 @@ import __dirname from "./utils.js";
 import handlebars from "express-handlebars";
 import socket from "./socket.js";
 import viewsRouter from "./router/views.router.js";
-import { PORT } from "./config.js";
+import { MONGODB, PORT, SESSION_SECRET } from "./config.js";
 import { connectToDatabase } from "./database/database.js";
 import chatRouter from "./router/chat.router.js";
+import sessionsRouter from "./router/sessionsrouter.js";
+import MongoStore from "connect-mongo";
+import morgan from "morgan";
+import session from "express-session";
 
 const app = express();
 
@@ -17,10 +21,23 @@ app.use("/", express.static(`${__dirname}/public`));
 app.engine("handlebars", handlebars.engine())
 app.set("views", `${__dirname}/views`);
 app.set("view engine", "handlebars");
+app.use(morgan("dev"));
+app.use(
+    session({
+        store: MongoStore.create({
+            mongoUrl: MONGODB,
+            ttl: 160,
+        }),
+        resave: true,
+        saveUninitialized: false,
+        secret: SESSION_SECRET,
+    })
+);
 
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartsRouter);
-app.use("/api/chat", chatRouter);
+app.use("/api/chat", chatRouter)
+app.use("/api/sessions", sessionsRouter)
 app.use("/", viewsRouter);
 
 const httpServer = app.listen(PORT, () => {

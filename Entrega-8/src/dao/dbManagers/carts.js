@@ -69,7 +69,7 @@ export class CartsDataBase {
     );
 
     return updatedCart.toObject();
-    }
+}
 
     eliminarProducto = async (productID, cartID) => {
         const carts = await this.getCarts();
