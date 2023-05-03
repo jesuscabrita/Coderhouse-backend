@@ -19,7 +19,7 @@ const app = express();
 // Registro del helper "eq"
 handlebar.helpers.eq = function(a, b) {
     return a === b;
-  };
+    };
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
