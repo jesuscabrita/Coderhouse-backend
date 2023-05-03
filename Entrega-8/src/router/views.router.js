@@ -73,6 +73,15 @@ router.get("/cart/:cid", checkLogin, async (req, res) => {
     }
 });
 
+router.get("/admin", checkLogin, async (req, res) => {
+    const cart = await cartsDataBase.getCarts();
+    if (!cart) {
+        return res.status(400).send({ status: "Error", error: "Carrito no encontrado" });
+    } else {
+        return res.render("admin", { title: "admin", cart: cart, user: req.session.user });
+    }
+});
+
 router.get("/realtimeproducts", checkLogin, async (req, res) => {
     const { page = 1 } = req.query;
     const limit = req.query.limit;

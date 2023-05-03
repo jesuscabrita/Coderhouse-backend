@@ -11,6 +11,9 @@
                 <a class="nav-link" href="/cart/643ea185c7e647c8058a97a5">Carrito<span class="badge bg-secondary ms-2">{{cart.products.length}}</span></a>
                 <a class="nav-link" href="/chat">Chat</a>
                 <a class="nav-link" href="/profile">Profile</a>
+                {{#if (eq user.role "admin")}}
+                    <a class="nav-link" href="/admin">Todos los carritos (admin)</a>
+                {{/if}}
             </div>
             {{#if user}}
                 <div class="nav navbar-nav ms-auto" role="search">

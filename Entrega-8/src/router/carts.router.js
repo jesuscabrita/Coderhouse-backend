@@ -5,6 +5,15 @@ const router = express.Router();
 
 const cartsDataBase = new CartsDataBase();
 
+router.get("/", async (req, res) => {
+    const cart = await cartsDataBase.getCarts();
+    if (!cart) {
+        return res.status(400).send({ status: "Error", error: "Carrito no encontrado" });
+    } else {
+        return res.status(200).send({ status: "Succes", message: "OK", cart });
+    }
+});
+
 router.get("/:cid", async (req, res) => {
     const cid = req.params.cid;
     const cart = await cartsDataBase.getCartById(cid);

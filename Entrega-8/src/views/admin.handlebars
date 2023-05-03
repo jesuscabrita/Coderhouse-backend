@@ -1,0 +1,23 @@
+
+<div class="cart-container row" data-carritoid={{cart._id}}>
+    <div>carritos: {{cart.length}}</div>   
+    {{#each cart}}
+        <div class="card" style="width: 18rem; margin-bottom: 20px;">
+            <div class="card-body">
+                {{#if this.products.length}}
+                    {{#each this.products}}
+                        <img src="{{this.product.thumbnail.[0]}}" height="150" class="card-img-top" style="object-fit:cover" alt="..." />
+                        <h5 class="card-title">{{this.product.title}}</h5>
+                        <p class="card-text">{{this.product.description}}</p>
+                        <p class="card-text">{{this.product.code}}</p>
+                        <p class="card-text">Cantidad: {{this.quantity}}</p>
+                        <button data-productid="{{this.product._id}}" data-carritoid="{{../cart._id}}" class="btn btn-primary">Añadir</button>
+                        <button data-producto="{{this._id}}" data-carritoid="{{../cart._id}}" class="btn btn-danger delete-product">Eliminar</button>
+                    {{/each}}
+                {{else}}
+                    <p>No hay productos en este carrito.</p>
+                {{/if}}
+            </div>
+        </div>
+    {{/each}}
+</div>
