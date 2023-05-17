@@ -18,6 +18,11 @@ export class UserDataBase {
         const user = users.find((u) => u._id == uid);
         return user;
     };
+    getUserCartById = async (uid) => {
+        const users = await this.getUser();
+        const user = users.find((u) => u.cart._id == uid);
+        return user;
+    };
 
     registerUser = async (first_name, last_name, email, age, password, cart) => {
         try {

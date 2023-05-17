@@ -66,12 +66,12 @@ router.delete("/:cid", async (req, res) => {
 
 router.delete("/:cid/products/:pid", async (req, res) => {
     try {
-        const productID = req.params.pid;
-        const carritoID = req.params.cid;
+        const cartId = req.params.cid;
+        const productId = req.params.pid;
 
-        const cart = await cartsDataBase.eliminarProducto(productID, carritoID)
+        const cart = await cartsDataBase.eliminarProducto(productId,cartId)
 
-        return res.status(201).send({ status: 'Success', message: 'Se elimino el producto correctamente', result: cart });
+        return res.status(200).send({ status: 'Success', message: 'Se elimino el producto correctamente', result: cart });
     } catch (err) {
         return res.status(400).send({ status: "Error", error: err.message });
     }

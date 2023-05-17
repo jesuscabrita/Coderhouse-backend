@@ -87,18 +87,29 @@ export class CartsDataBase {
         }
     };
 
-    eliminarTodosLosProductos = async (cartID) => {
-        const carts = await this.getCarts();
-        const cartIndex = carts.findIndex((c) => c._id == cartID);
-        if (cartIndex === -1) {
-            throw new Error("El carrito no existe");
+    eliminarProducto = async (productId, cartId) => {
+        try {
+            const carts = await this.getUser();
+            const cart = carts.find((e) => e.cart._id.toString() === cartId);
+            if (!cart) {
+                throw new Error(`No se encontró el carrito con id ${cartId}`);
+            }
+    
+            const productIndex = cart.cart.products.find((p) => p.product._id.toString() === productId);
+    
+            if (productIndex === -1) {
+                throw new Error(`No se encontró el producto con id ${productId} en el carrito`);
+            }
+    
+            cart.cart.products.splice(productIndex, 1);
+    
+            const updatedCart = await userModel.findByIdAndUpdate(cart._id, cart, { new: true });
+    
+            return updatedCart.toObject();
+        } catch (error) {
+            console.error(error);
+            throw error;
         }
-        const cart = carts[cartIndex];
-        cart.products = [];
-        const updatedCart = await cartsModel.findByIdAndUpdate(cart._id, cart, {
-            new: true,
-        });
-        return updatedCart.toObject();
     };
 
     editarCart = async (cartID, newProducts) => {

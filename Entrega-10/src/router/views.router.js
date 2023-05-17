@@ -66,7 +66,7 @@ router.get("/product/:pid", checkLogin, async (req, res) => {
 
 router.get("/cart/:cid", checkLogin, async (req, res) => {
     const cid = req.params.cid;
-    const cart = await cartsDataBase.getCartById(cid);
+    const cart = await userDataBase.getUserCartById(cid);
     if (!cart) {
         return res.status(400).send({ status: "Error", error: "Carrito no encontrado" });
     } else {

@@ -11,8 +11,8 @@
                         <p class="card-text">{{this.product.description}}</p>
                         <p class="card-text">{{this.product.code}}</p>
                         <p class="card-text">Cantidad: {{this.quantity}}</p>
-                        <button data-productid="{{this.product._id}}" data-carritoid="{{../../_id}}" class="btn btn-primary">Añadir</button>
-                        <button data-producto="{{this._id}}" data-carritoid="{{../../_id}}" class="btn btn-danger delete-product">Eliminar</button>
+                        <button data-productid="{{this.product._id}}" data-carritoid="{{../cart._id}}" class="btn btn-primary">Añadir</button>
+                        <button data-producto="{{this._id}}" data-carritoid="{{../cart._id}}" class="btn btn-danger delete-product">Eliminar</button>
                     {{/each}}
                 {{else}}
                     <p>No hay productos en este carrito.</p>
@@ -37,6 +37,7 @@
             const cart = await response.json();
             console.log('Producto agregado al carrito:', cart);
             alert('Producto agregado al carrito');
+            window.location.reload();
         } catch (error) {
             console.error(error);
             alert('Error al agregar el producto al carrito');
@@ -68,6 +69,7 @@
             console.error(error);
             alert('Error al eliminar el producto del carrito');
         }
+        window.location.reload();
     });
 });
 </script>
