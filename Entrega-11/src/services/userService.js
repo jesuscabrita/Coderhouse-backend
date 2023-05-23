@@ -1,36 +1,18 @@
-import { createHash, isValidPassword } from "../../middlewares/hash.js";
-import { cartsModel } from "../models/carts.js";
-import { userModel } from "../models/user.js";
+import { cartsModel } from "../dao/models/carts.js";
+import { userModel } from "../dao/models/user.js";
+import { createHash, isValidPassword } from "../middlewares/hash.js";
 import jwt from "jsonwebtoken";
 
-export class UserDataBase {
+export class UserService {
     static instance = null;
 
     static getInstance() {
-        if (!UserDataBase.instance) {
-            UserDataBase.instance = new UserDataBase();
+        if (!UserService.instance) {
+            UserService.instance = new UserService();
         }
-        return UserDataBase.instance;
+        return UserService.instance;
     }
-
     constructor() { }
-
-    getUser = async () => {
-        const data = await userModel.find();
-        const user = data.map((user) => user.toObject());
-        return user;
-    }
-
-    getUserById = async (uid) => {
-        const users = await this.getUser();
-        const user = users.find((u) => u._id == uid);
-        return user;
-    };
-    getUserCartById = async (uid) => {
-        const users = await this.getUser();
-        const user = users.find((u) => u.cart._id == uid);
-        return user;
-    };
 
     registerUser = async (first_name, last_name, email, age, password, cart) => {
         try {
@@ -38,7 +20,6 @@ export class UserDataBase {
             if (userExists) {
                 return { status: "error", error: `El usuario ${email} ya existe` };
             }
-
             const cart = await cartsModel.create({ products: [] });
 
             const user = {
@@ -50,9 +31,7 @@ export class UserDataBase {
                 cart: cart,
                 role: "usuario",
             };
-
             await userModel.create(user);
-
             return { status: "success", message: "Usuario registrado" };
         } catch (error) {
             return { status: "error", error: "Error interno del servidor" };
@@ -62,13 +41,11 @@ export class UserDataBase {
     loginUser = async (email, password, req, res) => {
         try {
             const user = await userModel.findOne({ email });
-
             if (!user) {
                 return { status: "error", error: "Correo electrónico incorrecto" };
             }
 
             const validPassword = isValidPassword(user, password);
-
             if (!validPassword) {
                 return { status: "error", error: "Contraseña incorrecta" };
             }
@@ -107,5 +84,4 @@ export class UserDataBase {
             return { status: "error", error: "Error interno del servidor" };
         }
     };
-
 }

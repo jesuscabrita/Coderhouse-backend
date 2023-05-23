@@ -1,11 +1,15 @@
 import { Server } from "socket.io";
-import { ProductsDataBase } from "./dao/dbManagers/products.js";
-import { ChatDataBase } from "./dao/dbManagers/chat.js";
+import { ChatService } from "./services/chatService.js";
+import { ChatRepository } from "./repositories/chatRepository.js";
+import { ProductsRepository } from "./repositories/productRepository.js";
+import { ProductsService } from "./services/productService.js";
 
 const socket = {};
 const messageQueue = [];
-const productDataBase = ProductsDataBase.getInstance();
-const chatDB = ChatDataBase.getInstance();
+const productsRepository = ProductsRepository.getInstance();
+const productService = ProductsService.getInstance();
+const chatService = ChatService.getInstance();
+const chatRepository = ChatRepository.getInstance();
 
 socket.connect = function (httpServer) {
     socket.io = new Server(httpServer);
@@ -15,20 +19,17 @@ socket.connect = function (httpServer) {
         console.log(`${socket.id} connected`);
         socket.broadcast.emit("userConnected", { user: socket.id, message: `${socket.id} se ha conectado` });
 
-        // Obtener todos los mensajes de la base de datos al conectarse un nuevo usuario
-        let messages = await chatDB.getMessages();
+        let messages = await chatRepository.getMessages();
         socket.emit("messageLogs", messages);
 
-        let productos = await productDataBase.getProducts();
+        let productos = await productsRepository.getProducts();
         socket.emit('updateProducts', productos);
 
         socket.on("addProduct", async (newProduct) => {
             console.log("Nuevo producto:", newProduct);
 
-            const addedProduct = await productDataBase.addProduct(newProduct);
-
-            // Emitir el evento 'updateProducts' a todos los clientes con la lista actualizada de productos
-            const productosActualizados = await productDataBase.getProducts();
+            const addedProduct = await productService.addProduct(newProduct);
+            const productosActualizados = await productService.getProducts();
             console.log("Productos actualizados:", productosActualizados);
 
             io.emit('updateProducts', productosActualizados);
@@ -55,7 +56,7 @@ socket.connect = function (httpServer) {
         socket.on("message", async (data) => {
             // Agregar el nuevo mensaje a la cola de mensajes y la base de datos
             messageQueue.push(data);
-            await chatDB.addMessage(data.message, data.user);
+            await chatService.addMessage(data.message, data.user);
 
             // Enviar el mensaje solo al cliente que lo ha enviado
             socket.emit("messageSent", { user: data.user, message: data.message });
@@ -65,9 +66,9 @@ socket.connect = function (httpServer) {
         });
 
         socket.on("eliminarMessage", async (messageId) => {
-            await chatDB.eliminarMessage(messageId);
+            await chatService.eliminarMessage(messageId);
             // Envía un evento a todos los clientes para actualizar la lista de mensajes
-            let messages = await chatDB.getMessages();
+            let messages = await chatService.getMessages();
             io.emit("messageLogs", messages);
         });
 
