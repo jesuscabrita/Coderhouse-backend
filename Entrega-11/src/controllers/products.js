@@ -1,7 +1,5 @@
-import { ProductsRepository } from "../repositories/productRepository.js";
 import { ProductsService } from "../services/productService.js";
 
-const productsRepository = ProductsRepository.getInstance();
 const productService = ProductsService.getInstance();
 
 export const getProducts = async (req, res) => {
@@ -9,7 +7,7 @@ export const getProducts = async (req, res) => {
         const limit = req.query.limit;
         const page = req.query.page;
         const query = req.query;
-        const response = await productsRepository.getProducts(limit, page, query);
+        const response = await productService.getProducts(limit, page, query);
         res.status(200).send(response);
     } catch (error) {
         res.status(404).send({ error: error.message });
@@ -19,7 +17,7 @@ export const getProducts = async (req, res) => {
 export const getProductsById = async (req, res) => {
     const pid = req.params.pid;
     try {
-        const producto = await productsRepository.getProductById(pid);
+        const producto = await productService.getProductById(pid);
         return res.status(200).send({ producto });
     } catch (error) {
         return res.status(404).send({ error: error.message });

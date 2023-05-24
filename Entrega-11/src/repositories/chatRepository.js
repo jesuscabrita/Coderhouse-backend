@@ -11,13 +11,19 @@ export class ChatRepository {
     }
     constructor() { }
 
-    getMessages = async () => {
-        try {
-            const data = await messagesModel.find();
-            const messages = data.map(message => message.toObject());
-            return messages;
-        } catch (error) {
-            throw new Error("Error al obtener los mensajes");
-        }
+    modelGetMessage = () => {
+        return  messagesModel.find();
+    }
+
+    modelCreateMessage = (newMessage) => {
+        return messagesModel.create(newMessage);
+    }
+
+    modelupdateOneMessage = (id, updatedMessage) => {
+        return messagesModel.updateOne({ _id: id },{ $set: updatedMessage });
+    }
+
+    modelDeleteMessage = (id) => {
+        return messagesModel.findByIdAndDelete(id)
     }
 }

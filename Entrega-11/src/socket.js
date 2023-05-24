@@ -1,15 +1,11 @@
 import { Server } from "socket.io";
 import { ChatService } from "./services/chatService.js";
-import { ChatRepository } from "./repositories/chatRepository.js";
-import { ProductsRepository } from "./repositories/productRepository.js";
 import { ProductsService } from "./services/productService.js";
 
 const socket = {};
 const messageQueue = [];
-const productsRepository = ProductsRepository.getInstance();
 const productService = ProductsService.getInstance();
 const chatService = ChatService.getInstance();
-const chatRepository = ChatRepository.getInstance();
 
 socket.connect = function (httpServer) {
     socket.io = new Server(httpServer);
@@ -19,10 +15,10 @@ socket.connect = function (httpServer) {
         console.log(`${socket.id} connected`);
         socket.broadcast.emit("userConnected", { user: socket.id, message: `${socket.id} se ha conectado` });
 
-        let messages = await chatRepository.getMessages();
+        let messages = await chatService.getMessages();
         socket.emit("messageLogs", messages);
 
-        let productos = await productsRepository.getProducts();
+        let productos = await productService.getProducts();
         socket.emit('updateProducts', productos);
 
         socket.on("addProduct", async (newProduct) => {

@@ -1,3 +1,4 @@
+import { cartsModel } from "../dao/models/carts.js";
 import { userModel } from "../dao/models/user.js";
 
 export class UserRepository {
@@ -11,21 +12,19 @@ export class UserRepository {
     }
     constructor() { }
 
-    getUser = async () => {
-        const data = await userModel.find();
-        const user = data.map((user) => user.toObject());
-        return user;
+    modelGetUser = () => {
+        return userModel.find();
     }
 
-    getUserById = async (uid) => {
-        const users = await this.getUser();
-        const user = users.find((u) => u._id == uid);
-        return user;
-    };
+    modelRegisterAndLogin = (email) => {
+        return userModel.findOne({ email });
+    }
 
-    getUserCartById = async (uid) => {
-        const users = await this.getUser();
-        const user = users.find((u) => u.cart._id == uid);
-        return user;
-    };
+    modelCartCreate = () => {
+        return cartsModel.create({ products: [] })
+    }
+
+    modelUserCreate = (user) => {
+        return userModel.create(user)
+    }
 }

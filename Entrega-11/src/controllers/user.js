@@ -1,12 +1,10 @@
-import { UserRepository } from "../repositories/userRepository.js";
 import { UserService } from "../services/userService.js";
 
-const userRepository = UserRepository.getInstance();
 const userService = UserService.getInstance();
 
 export const getUser = async (req, res) => {
     try {
-        const user = await userRepository.getUser();
+        const user = await userService.getUser();
         res.status(200).send({ user });
     } catch (error) {
         res.status(500).send({ error: error.message });

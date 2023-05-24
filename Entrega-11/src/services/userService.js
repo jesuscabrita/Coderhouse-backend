@@ -1,7 +1,6 @@
-import { cartsModel } from "../dao/models/carts.js";
-import { userModel } from "../dao/models/user.js";
 import { createHash, isValidPassword } from "../middlewares/hash.js";
 import jwt from "jsonwebtoken";
+import { UserRepository } from "../repositories/userRepository.js";
 
 export class UserService {
     static instance = null;
@@ -12,15 +11,35 @@ export class UserService {
         }
         return UserService.instance;
     }
-    constructor() { }
+    constructor() { 
+        this.userRepository = UserRepository.getInstance();
+    }
+
+    getUser = async () => {
+        const data = await this.userRepository.modelGetUser();
+        const user = data.map((user) => user.toObject());
+        return user;
+    }
+
+    getUserById = async (uid) => {
+        const users = await this.getUser();
+        const user = users.find((u) => u._id == uid);
+        return user;
+    };
+
+    getUserCartById = async (uid) => {
+        const users = await this.getUser();
+        const user = users.find((u) => u.cart._id == uid);
+        return user;
+    };
 
     registerUser = async (first_name, last_name, email, age, password, cart) => {
         try {
-            const userExists = await userModel.findOne({ email });
+            const userExists = await this.userRepository.modelRegisterAndLogin( email );
             if (userExists) {
                 return { status: "error", error: `El usuario ${email} ya existe` };
             }
-            const cart = await cartsModel.create({ products: [] });
+            const cart = await this.userRepository.modelCartCreate();
 
             const user = {
                 first_name,
@@ -31,7 +50,7 @@ export class UserService {
                 cart: cart,
                 role: "usuario",
             };
-            await userModel.create(user);
+            await this.userRepository.modelUserCreate(user);
             return { status: "success", message: "Usuario registrado" };
         } catch (error) {
             return { status: "error", error: "Error interno del servidor" };
@@ -40,7 +59,7 @@ export class UserService {
 
     loginUser = async (email, password, req, res) => {
         try {
-            const user = await userModel.findOne({ email });
+            const user = await this.userRepository.modelRegisterAndLogin( email );
             if (!user) {
                 return { status: "error", error: "Correo electrónico incorrecto" };
             }

@@ -1,4 +1,5 @@
 import { cartsModel } from "../dao/models/carts.js";
+import { productsModel } from "../dao/models/products.js";
 import { userModel } from "../dao/models/user.js";
 
 export class CartRepository {
@@ -12,36 +13,31 @@ export class CartRepository {
     }
     constructor() { }
 
-    getCarts = async () => {
-        const data = await cartsModel.find();
-        const carts = data.map((cart) => cart.toObject());
-        return carts;
-    };
+    modelGetCart = () => {
+        return cartsModel.find();
+    }
 
-    getCartById = async (cid) => {
-        const carts = await this.getCarts();
-        const cart = carts.find((u) => u._id == cid);
-        return cart;
-    };
+    modelGetUser = () => {
+        return  userModel.find();
+    }
 
-    addCart = async (cart) => {
-        const carts = await this.getCarts();
-        let cartIndex = carts.findIndex((c) => c._id == cart.id);
-        if (cartIndex === -1) {
-            cartIndex = carts.length;
-            carts.push({
-                products: [],
-            });
-        } else {
-            carts[cartIndex].products = cart.products;
-        }
-        const createdCart = await cartsModel.create(cart);
-        return createdCart.toObject();
-    };
+    modelCartCreate = (cart) => {
+        return cartsModel.create(cart)
+    }
 
-    getUser = async () => {
-        const data = await userModel.find();
-        const user = data.map((user) => user.toObject());
-        return user;
+    modelUserfindByIdAndUpdate = (carritoID, carrito) => {
+        return userModel.findByIdAndUpdate(carritoID, carrito, { new: true })
+    }
+
+    modelCartfindByIdAndUpdate = (cartId, newProducts) => {
+        return cartsModel.findByIdAndUpdate(cartId, { products: newProducts }, { new: true })
+    }
+
+    modelCartQuantity = (cartId, cart) => {
+        return cartsModel.findByIdAndUpdate(cartId, cart, { new: true })
+    }
+
+    modelProductAdd = (productId) => {
+        return productsModel.findById(productId)
     }
 }

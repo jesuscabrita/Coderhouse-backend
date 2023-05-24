@@ -1,12 +1,10 @@
-import { ChatRepository } from "../repositories/chatRepository.js";
 import { ChatService } from "../services/chatService.js";
 
 const chatService = ChatService.getInstance();
-const chatRepository = ChatRepository.getInstance();
 
 export const getChats = async (req, res) => {
     try {
-        const messages = await chatRepository.getMessages()
+        const messages = await chatService.getMessages()
         res.status(200).send({ messages });
     } catch (error) {
         res.status(500).send({ error: error.message });

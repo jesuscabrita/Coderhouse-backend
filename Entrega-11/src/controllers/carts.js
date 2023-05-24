@@ -1,13 +1,11 @@
-import { CartRepository } from "../repositories/cartRepository.js";
-import { UserRepository } from "../repositories/userRepository.js";
 import { CartService } from "../services/cartService.js";
+import { UserService } from "../services/userService.js";
 
 const cartsService = CartService.getInstance();
-const cartsRepository = CartRepository.getInstance();
-const userRepository = UserRepository.getInstance();
+const userService = UserService.getInstance()
 
 export const getCarts = async (req, res) => {
-    const cart = await cartsRepository.getCarts();
+    const cart = await cartsService.getCarts();
     if (!cart) {
         return res.status(400).send({ status: "Error", error: "Carrito no encontrado" });
     } else {
@@ -17,7 +15,7 @@ export const getCarts = async (req, res) => {
 
 export const getUserById = async (req, res) => {
     const uid = req.params.uid;
-    const cart = await userRepository.getUserById(uid);
+    const cart = await userService.getUserById(uid);
     if (!cart) {
         return res.status(400).send({ status: "Error", error: "Carrito no encontrado" });
     } else {
@@ -30,7 +28,7 @@ export const addCarts = async (req, res) => {
         const cartId = parseInt(req.params.id);
         const cart = req.body;
         cart.id = cartId;
-        const updatedCart = await cartsRepository.addCart(cart);
+        const updatedCart = await cartsService.addCart(cart);
         return res.status(201).send({ status: 'Succes', message: 'Se creo el carritoo correctamente', updatedCart });
     } catch (err) {
         return res.status(400).send({ status: "Error", error: err.message });
