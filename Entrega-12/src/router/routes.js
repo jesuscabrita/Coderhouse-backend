@@ -2,7 +2,7 @@ import cartsRouter from "./carts.router.js";
 import chatRouter from "./chat.router.js";
 import productRouter from "./product.router.js";
 import sessionsRouter from "./sessionsrouter.js";
-import ricketRouter from "./ticket.router.js";
+import ticketRouter from "./ticket.router.js";
 import viewsRouter from "./views.router.js";
 
 export const  plugin_Rutas = (app) => {
@@ -11,5 +11,5 @@ export const  plugin_Rutas = (app) => {
     app.use("/api/chat", chatRouter)
     app.use("/api/sessions", sessionsRouter)
     app.use("/", viewsRouter);
-    app.use("/api/ticket", ricketRouter)
+    app.use("/api/ticket", ticketRouter)
 }

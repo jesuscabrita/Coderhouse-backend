@@ -1,10 +1,12 @@
 import { ChatService } from "../services/chatService.js";
 import { ProductsService } from "../services/productService.js";
+import { TicketService } from "../services/ticketService.js";
 import { UserService } from "../services/userService.js";
 
 const productsService = ProductsService.getInstance();
 const chatService = ChatService.getInstance();
 const userService = UserService.getInstance();
+const ticketService = TicketService.getInstance();
 
 export const getLogin = async (req, res) => {
     res.render("login", { title: "Login", user: req.session.user });
@@ -28,6 +30,16 @@ export const addProduct = async (req, res) => {
         user: req.session.user,
     });
 };
+
+export const getTicketById = async (req, res) => {
+    const tid = req.params.tid;
+    const ticket = await ticketService.getTicketById(tid);
+    if (!ticket) {
+        return res.status(400).send({ status: "Error", error: "Ticket no encontrado" });
+    } else {
+        return res.render("ticket", { title: "Ticket", tickets: ticket, user: req.session.user });
+    }
+}
 
 export const getProduct = async (req, res) => {
     const { page = 1 } = req.query;

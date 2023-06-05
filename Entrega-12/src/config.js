@@ -12,3 +12,5 @@ const checkEnv = (enVar) => {
 export const PORT = checkEnv("PORT");
 export const MONGODB = checkEnv("MONGODB");
 export const SESSION_SECRET = checkEnv("SESSION_SECRET");
+export const EMAIL_USERNAME = checkEnv("EMAIL_USERNAME");
+export const EMAIL_PASSWORD = checkEnv("EMAIL_PASSWORD");

@@ -6,6 +6,5 @@ const router = express.Router();
 router.get("/", getTicket);
 router.get("/:tid", getTicketById);
 router.post("/:uid/purchase", createTicket);
-// router.delete("/:cid/products/:pid", productDelete);
 
 export default router;

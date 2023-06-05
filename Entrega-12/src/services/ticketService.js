@@ -31,7 +31,7 @@ export class TicketService {
 
     getTicketById = async (tid) => {
         const tickets = await this.getTicket();
-        const ticket = tickets.find((ticket) => ticket._id == tid);
+        const ticket = tickets.find((ticket) => ticket.userID == tid);
         if (!ticket) {
             throw new Error('No se encontró el ticket seleccionado');
         }
@@ -77,6 +77,17 @@ export class TicketService {
         return totalAmount;
     };
 
+    enviarCorreo = async (ticket) => {
+        const transporter = this.ticketRepository.createTransportCorreo();
+        const correo = this.ticketRepository.correoTextEnCola(ticket);
+        try {
+            const info = await this.ticketRepository.enviarCorreo(transporter,correo);
+            console.log(`Correo electrónico enviado: ${info.messageId}`);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     createTicket = async (userId) => {
         try {
             const user = await this.getUserById(userId);
@@ -108,6 +119,7 @@ export class TicketService {
                 productInDB.stock -= quantity;
                 await this.ticketRepository.modelUpdateProduct(productInDB);
             }
+            await this.enviarCorreo(newTicket);
             const createdTicket = await this.ticketRepository.modelCreateTicket(newTicket);
             user.cart = cartCopy;
             await this.ticketRepository.modelUserUpdateOne({ _id: user._id }, { cart: user.cart }); // Guardar los cambios en el usuario en la base de datos

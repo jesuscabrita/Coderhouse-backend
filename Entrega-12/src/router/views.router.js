@@ -2,7 +2,7 @@ import { Router } from "express";
 import { checkLogged, checkLogin } from "../middlewares/auth.js";
 import { passportCall } from "../middlewares/passportCall.js";
 import { authorization } from "../middlewares/authorization.js";
-import { addProduct, getAdmin, getCartById, getChat, getHomeProduct, getLogin, getProduct, getProductById, getProfile, getRealtimeproducts, getRegister, getlogout } from "../controllers/views.js";
+import { addProduct, getAdmin, getCartById, getChat, getHomeProduct, getLogin, getProduct, getProductById, getProfile, getRealtimeproducts, getRegister, getTicketById, getlogout } from "../controllers/views.js";
 
 const router = Router();
 
@@ -11,6 +11,7 @@ router.get("/register", checkLogged, getRegister);
 router.get("/profile", checkLogin, getProfile);
 router.get('/logout', getlogout);
 
+router.get("/ticket/:tid",checkLogin ,getTicketById);
 router.get("/addProduct", checkLogin, authorization("admin") ,addProduct);
 router.get("/products", checkLogin, getProduct);
 router.get("/product/:pid", checkLogin, getProductById);

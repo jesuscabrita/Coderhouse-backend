@@ -1,4 +1,4 @@
-<div class="cart-container row" data-carritoid={{cart.cart._id}}>
+<div class="cart-container row" data-carritoid="{{cart.cart._id}}" data-usercardid="{{cart._id}}">
     {{#if cart.cart.products.length}}
         {{#each cart.cart.products}}
         <div class="card" style="width: 18rem; margin-bottom: 20px;">
@@ -18,6 +18,9 @@
     {{else}}
         <p>No hay productos aún</p>
     {{/if}}
+    <div>
+        <button data-cardid="{{this._id}}" data-userid="{{this.userID}}" data-usercardid="{{cart._id}}" class="btn btn-primary">Comprar</button>
+    </div>
 </div>
 
 <script>
@@ -68,4 +71,36 @@
             window.location.reload();
     });
 });
+
+const buttonsUser = document.querySelectorAll('button[data-cardid]');
+    buttonsUser.forEach(button => {
+        button.addEventListener('click', async () => {
+            const userID = button.getAttribute('data-userid');
+            const usercartID = button.getAttribute('data-usercardid');
+
+            try {
+                const response = await fetch(`/api/ticket/${usercartID}/purchase`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userID: userID
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al crear el ticket');
+                }
+
+                const ticket = await response.json();
+                console.log('Ticket creado:', ticket);
+                alert('Ticket creado');
+            } catch (error) {
+                console.error(error);
+                alert('Error al crear el ticket');
+            }
+            window.location.href = `/ticket/${usercartID}`;
+        });
+    });
 </script>
