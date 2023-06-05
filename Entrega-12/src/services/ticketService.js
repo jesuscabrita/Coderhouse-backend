@@ -57,90 +57,63 @@ export class TicketService {
     };
 
     generateUniqueId = async () => {
-        // Implementa tu lógica para generar un identificador único aquí
-        // Puede ser un UUID, un hash único, un contador en la base de datos, etc.
-        // En este ejemplo, utilizaremos una función sencilla para generar un número aleatorio de 6 dígitos
         const uniqueId = Math.floor(100000 + Math.random() * 900000);
         return uniqueId;
-    }
+    };
 
-    // Función para generar un código único para el ticket
-    generateTicketCode= async () => {
-    // Generar un identificador único
-    const uniqueId = await this.generateUniqueId();
+    generateTicketCode = async () => {
+        const uniqueId = await this.generateUniqueId();
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().replace(/[-:.T]/g, '').slice(0, 14);
+        const ticketCode = `ORDEN-${formattedDate}-${uniqueId}`;
+        return ticketCode;
+    };
 
-    // Obtener la fecha actual
-    const currentDate = new Date();
-
-    // Formatear la fecha actual como YYYYMMDDHHMMSS
-    const formattedDate = currentDate.toISOString().replace(/[-:.T]/g, '').slice(0, 14);
-
-    // Crear el código del ticket utilizando el identificador y la fecha
-    const ticketCode = `TICKET-${formattedDate}-${uniqueId}`;
-
-    return ticketCode;
-    }
-
-  // Función para calcular el monto total del ticket
-    calculateTotalAmount= async (products) => {
-    let totalAmount = 0;
-    for (const product of products) {
-      totalAmount += product.quantity * product.product.price;
-    }
-    return totalAmount;
-    }
+    calculateTotalAmount = async (products) => {
+        let totalAmount = 0;
+        for (const product of products) {
+            totalAmount += product.quantity * product.product.price;
+        }
+        return totalAmount;
+    };
 
     createTicket = async (userId) => {
         try {
-            // Obtener los productos del carrito del usuario
             const user = await this.getUserById(userId);
             const cartProducts = user.cart.products;
-    
-            // Crear un nuevo objeto de ticket
+            const cartCopy = { _id: user.cart._id, products: [] };
+
             const newTicket = {
-                code: await this.generateTicketCode(), // Genera un código único para el ticket
+                code: await this.generateTicketCode(),
                 purcharse_datetime: new Date(),
                 amount: await this.calculateTotalAmount(cartProducts),
                 purcharse: user.email,
-                products: cartProducts.map((product) => product.product), // Mapear los productos completos
+                products: cartProducts.map((product) => ({
+                    ...product
+                })),
                 userID: user._id,
             };
-    
-            // Restar la cantidad de productos vendidos al stock en la base de datos
+
             for (const product of cartProducts) {
                 const productId = product.product._id;
                 const quantity = product.quantity;
-              
-                // Obtener el producto de la base de datos
                 const productInDB = await this.productsRepository.modelProductById(productId);
-              
-                // Verificar si el producto existe
+
                 if (!productInDB) {
-                  throw new Error(`No se encontró el producto con ID: ${productId}`);
+                    throw new Error(`No se encontró el producto con ID: ${productId}`);
                 }
-              
-                // Verificar si hay suficiente stock para restar
                 if (productInDB.stock < quantity) {
-                  throw new Error(`No hay suficiente stock para el producto con ID: ${productId}`);
+                    throw new Error(`No hay suficiente stock para el producto con ID: ${productId}`);
                 }
-              
-                // Restar la cantidad al stock del producto
                 productInDB.stock -= quantity;
-              
-                // Actualizar el producto en la base de datos
                 await this.ticketRepository.modelUpdateProduct(productInDB);
-              }
-    
-            // Guardar el nuevo ticket en la base de datos
+            }
             const createdTicket = await this.ticketRepository.modelCreateTicket(newTicket);
-    
-            // Limpiar el carrito del usuario
-            user.cart.products = [];
-            await this.ticketRepository.modelUserUpdateOne({ _id: user._id }, { cart: { products: [] } }); // Guardar los cambios en el usuario en la base de datos
-    
+            user.cart = cartCopy;
+            await this.ticketRepository.modelUserUpdateOne({ _id: user._id }, { cart: user.cart }); // Guardar los cambios en el usuario en la base de datos
+
             return createdTicket;
         } catch (error) {
-            // Manejo de errores
             console.error("Error al crear el ticket:", error);
             throw error;
         }

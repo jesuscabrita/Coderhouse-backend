@@ -26,8 +26,6 @@ export class TicketRepository {
     };
 
     modelUpdateProduct = (product) => {
-        // Actualiza el producto en la base de datos utilizando alguna función o método correspondiente
-        // por ejemplo, si estás utilizando Mongoose, puedes usar el método `findByIdAndUpdate`:
         return productsModel.findByIdAndUpdate(product._id, product, { new: true });
     };
 
