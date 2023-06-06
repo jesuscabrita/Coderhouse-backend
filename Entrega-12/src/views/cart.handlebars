@@ -92,15 +92,14 @@ const buttonsUser = document.querySelectorAll('button[data-cardid]');
                 if (!response.ok) {
                     throw new Error('Error al crear el ticket');
                 }
-
                 const ticket = await response.json();
-                console.log('Ticket creado:', ticket);
+                console.log('Ticket creado:', ticket.ticket);
                 alert('Ticket creado');
+                window.location.href = `/ticket/${ticket.ticket.userID}`;
             } catch (error) {
                 console.error(error);
                 alert('Error al crear el ticket');
             }
-            window.location.href = `/ticket/${usercartID}`;
         });
     });
 </script>

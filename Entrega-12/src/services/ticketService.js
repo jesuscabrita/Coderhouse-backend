@@ -74,7 +74,7 @@ export class TicketService {
         for (const product of products) {
             totalAmount += product.quantity * product.product.price;
         }
-        return totalAmount;
+        return totalAmount.toFixed(2);
     };
 
     enviarCorreo = async (ticket) => {
@@ -93,6 +93,7 @@ export class TicketService {
             const user = await this.getUserById(userId);
             const cartProducts = user.cart.products;
             const cartCopy = { _id: user.cart._id, products: [] };
+            let ticketUserId = Math.floor(100000 + Math.random() * 900000);
 
             const newTicket = {
                 code: await this.generateTicketCode(),
@@ -102,7 +103,7 @@ export class TicketService {
                 products: cartProducts.map((product) => ({
                     ...product
                 })),
-                userID: user._id,
+                userID: ticketUserId,
             };
 
             for (const product of cartProducts) {
