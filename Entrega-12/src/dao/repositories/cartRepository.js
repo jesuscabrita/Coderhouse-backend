@@ -1,6 +1,6 @@
-import { cartsModel } from "../dao/models/carts.js";
-import { productsModel } from "../dao/models/products.js";
-import { userModel } from "../dao/models/user.js";
+import { cartsModel } from "../models/carts.js";
+import { productsModel } from "../models/products.js";
+import { userModel } from "../models/user.js";
 
 export class CartRepository {
     static instance = null;
@@ -27,6 +27,10 @@ export class CartRepository {
 
     modelUserfindByIdAndUpdate = (carritoID, carrito) => {
         return userModel.findByIdAndUpdate(carritoID, carrito, { new: true })
+    }
+
+    modeldeleteProduct = (carritoID, carrito) => {
+        return userModel.findByIdAndUpdate(carritoID, { cart: carrito }, { new: true })
     }
 
     modelCartfindByIdAndUpdate = (cartId, newProducts) => {

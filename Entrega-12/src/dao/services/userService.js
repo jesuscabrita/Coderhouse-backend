@@ -1,6 +1,6 @@
-import { createHash, isValidPassword } from "../middlewares/hash.js";
-import jwt from "jsonwebtoken";
 import { UserRepository } from "../repositories/userRepository.js";
+import { createHash, isValidPassword } from "../../middlewares/hash.js";
+import jwt from "jsonwebtoken";
 
 export class UserService {
     static instance = null;

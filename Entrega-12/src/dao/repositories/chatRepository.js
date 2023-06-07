@@ -1,4 +1,4 @@
-import { messagesModel } from "../dao/models/messages.js";
+import { messagesModel } from "../models/messages.js";
 
 export class ChatRepository {
     static instance = null;

@@ -92,6 +92,9 @@ export class TicketService {
         try {
             const user = await this.getUserById(userId);
             const cartProducts = user.cart.products;
+            if (cartProducts.length === 0) {
+                throw new Error("No hay productos en el carrito");
+            }
             const cartCopy = { _id: user.cart._id, products: [] };
             let ticketUserId = Math.floor(100000 + Math.random() * 900000);
 

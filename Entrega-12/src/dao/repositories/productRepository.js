@@ -1,4 +1,4 @@
-import { productsModel } from "../dao/models/products.js";
+import { productsModel } from "../models/products.js";
 
 export class ProductsRepository {
     static instance = null;

@@ -1,4 +1,4 @@
-import { ChatService } from "../services/chatService.js";
+import { ChatService } from "../dao/services/chatService.js";
 
 const chatService = ChatService.getInstance();
 

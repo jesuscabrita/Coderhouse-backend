@@ -1,8 +1,8 @@
-import { EMAIL_PASSWORD, EMAIL_USERNAME } from "../config.js";
-import { productsModel } from "../dao/models/products.js";
-import { ticketModel } from "../dao/models/ticket.js";
-import { userModel } from "../dao/models/user.js";
 import nodemailer from 'nodemailer';
+import { ticketModel } from "../models/ticket.js";
+import { userModel } from "../models/user.js";
+import { productsModel } from "../models/products.js";
+import { HOST_EMAIL, PORT_EMAIL, EMAIL_PASSWORD, EMAIL_USERNAME, } from '../../config.js';
 
 export class TicketRepository {
     static instance = null;
@@ -33,8 +33,8 @@ export class TicketRepository {
 
     createTransportCorreo = () => {
         return nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
+            host: HOST_EMAIL,
+            port: PORT_EMAIL,
             auth: {
                 user: EMAIL_USERNAME,
                 pass: EMAIL_PASSWORD

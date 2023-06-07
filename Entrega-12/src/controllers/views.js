@@ -1,7 +1,7 @@
-import { ChatService } from "../services/chatService.js";
-import { ProductsService } from "../services/productService.js";
-import { TicketService } from "../services/ticketService.js";
-import { UserService } from "../services/userService.js";
+import { ChatService } from "../dao/services/chatService.js";
+import { ProductsService } from "../dao/services/productService.js";
+import { TicketService } from "../dao/services/ticketService.js";
+import { UserService } from "../dao/services/userService.js";
 
 const productsService = ProductsService.getInstance();
 const chatService = ChatService.getInstance();

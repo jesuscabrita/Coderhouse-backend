@@ -1,4 +1,4 @@
-import { ProductsService } from "../services/productService.js";
+import { ProductsService } from "../dao/services/productService.js";
 
 const productService = ProductsService.getInstance();
 

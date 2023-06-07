@@ -1,8 +1,8 @@
-import { CartService } from "../services/cartService.js";
-import { UserService } from "../services/userService.js";
+import { CartService } from "../dao/services/cartService.js";
+import { UserService } from "../dao/services/userService.js";
 
 const cartsService = CartService.getInstance();
-const userService = UserService.getInstance()
+const userService = UserService.getInstance();
 
 export const getCarts = async (req, res) => {
     const cart = await cartsService.getCarts();

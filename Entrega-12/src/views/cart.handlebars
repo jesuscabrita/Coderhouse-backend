@@ -11,7 +11,7 @@
                 <p class="card-text">{{this.product.code}}</p>
                 <p class="card-text">Cantidad: {{this.quantity}}</p>
                 <button data-productid="{{this.product._id}}" data-carritoid="{{../cart.cart._id}}" class="btn btn-primary">Añadir</button>
-                <button data-producto="{{this._id}}" data-carritoid="{{../cart.cart._id}}" class="btn btn-danger delete-product">Eliminar</button>
+                <button data-deleteproduct="{{this._id}}" data-carritoid="{{../cart.cart._id}}" class="btn btn-danger">Eliminar</button>
             </div>
         </div>
         {{/each}}
@@ -45,12 +45,13 @@
     }
 }
 
-    const deleteButtons = document.querySelectorAll('.delete-product');
+    const deleteButtons = document.querySelectorAll('button[data-deleteproduct]');
 
-    deleteButtons.forEach(button => {
+deleteButtons.forEach(button => {
     button.addEventListener('click', async () => {
-        const carritoID = button.dataset.carritoid;
-        const productoID = button.dataset.producto;
+        const carritoID = button.getAttribute('data-carritoid');
+        const productoID = button.getAttribute('data-deleteproduct');
+        console.log('producto id:', productoID)
 
         try {
             const response = await fetch(`/api/carts/${carritoID}/products/${productoID}`, {
@@ -58,17 +59,18 @@
             });
 
             if (!response.ok) {
-                throw new Error('Error al eliminar el producto del carrito');
+                const errorData = await response.json();
+                throw new Error(errorData.error);
             }
 
             const data = await response.json();
             console.log('Producto eliminado del carrito:', data);
             alert('Producto eliminado del carrito');
+            window.location.reload();
         } catch (error) {
             console.error(error);
             alert('Error al eliminar el producto del carrito');
         }
-            window.location.reload();
     });
 });
 
@@ -90,15 +92,16 @@ const buttonsUser = document.querySelectorAll('button[data-cardid]');
                 });
 
                 if (!response.ok) {
-                    throw new Error('Error al crear el ticket');
+                    const errorData = await response.json();
+                    throw new Error(errorData.error);
                 }
                 const ticket = await response.json();
                 console.log('Ticket creado:', ticket.ticket);
                 alert('Ticket creado');
                 window.location.href = `/ticket/${ticket.ticket.userID}`;
             } catch (error) {
-                console.error(error);
-                alert('Error al crear el ticket');
+                console.error('error', error);
+                alert(error);
             }
         });
     });

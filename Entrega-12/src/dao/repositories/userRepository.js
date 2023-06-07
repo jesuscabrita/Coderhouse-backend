@@ -1,5 +1,5 @@
-import { cartsModel } from "../dao/models/carts.js";
-import { userModel } from "../dao/models/user.js";
+import { cartsModel } from "../models/carts.js";
+import { userModel } from "../models/user.js";
 
 export class UserRepository {
     static instance = null;

@@ -59,11 +59,9 @@ export class CartService {
                 throw new Error(`No se encontró el producto con id ${productId}`);
             }
 
-            const indiceProduct = carrito.cart.products.findIndex(
-                (e) => e.product._id.toString() === productId
-            );
-            if (indiceProduct !== -1) {
-                carrito.cart.products[indiceProduct].quantity += quantity;
+            const existingProduct = carrito.cart.products.find((e) => e.product._id.toString() === productId);
+            if (existingProduct) {
+                existingProduct.quantity += quantity;
             } else {
                 carrito.cart.products.push({
                     quantity: quantity,
@@ -91,15 +89,16 @@ export class CartService {
                 throw new Error(`No se encontró el carrito con id ${cartId}`);
             }
     
-            const productIndex = cart.cart.products.find((p) => p.product._id.toString() === productId);
+            const productIndex = cart.cart.products.findIndex((p) => p._id.toString() === productId);
+            console.log('productoId', productIndex);
             if (productIndex === -1) {
                 throw new Error(`No se encontró el producto con id ${productId} en el carrito`);
             }
     
             cart.cart.products.splice(productIndex, 1);
-            const updatedCart = await this.cartRepository.modelUserfindByIdAndUpdate(
-                cart._id, 
-                cart,
+            const updatedCart = await this.cartRepository.modeldeleteProduct(
+                cart._id,
+                cart.cart,
                 // { new: true }
             );
     
@@ -139,8 +138,8 @@ export class CartService {
         }
         cart.products[productIndex].quantity = quantity;
         const updatedCart = await this.cartRepository.modelCartQuantity(
-            cart._id, 
-            cart, 
+            cart._id,
+            cart,
             // { new: true }
         );
         return updatedCart.toObject();

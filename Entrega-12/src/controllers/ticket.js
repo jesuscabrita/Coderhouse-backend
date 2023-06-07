@@ -1,4 +1,4 @@
-import { TicketService } from "../services/ticketService.js";
+import { TicketService } from "../dao/services/ticketService.js";
 
 const ticketService = TicketService.getInstance();
 
