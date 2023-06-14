@@ -24,6 +24,7 @@ app.set("view engine", "handlebars");
 
 app.use(cors());
 app.use(compression());
+// app.use(compression({ brotli: { enabled: true, zlib: { } } }))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", express.static(`${__dirname}/public`));
