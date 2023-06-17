@@ -1,3 +1,5 @@
+import { CustomError } from "../../error/CustomError.js";
+import { TicketErrors } from "../../error/diccionario.error.js";
 import { ProductsRepository } from "../repositories/productRepository.js";
 import { TicketRepository } from "../repositories/ticketRepository.js";
 import { UserRepository } from "../repositories/userRepository.js";
@@ -33,7 +35,13 @@ export class TicketService {
         const tickets = await this.getTicket();
         const ticket = tickets.find((ticket) => ticket.userID == tid);
         if (!ticket) {
-            throw new Error('No se encontró el ticket seleccionado');
+            const ticketError = TicketErrors(ticket).TICKET_BY_ID_ERROR;
+                const errorTicket = CustomError.generateCustomError(
+                    ticketError.name,
+                    ticketError.message,
+                    ticketError.cause
+                );
+            throw new Error(errorTicket.cause);
         }
         return ticket;
     }
@@ -48,11 +56,23 @@ export class TicketService {
         try {
             const producto = await this.productsRepository.modelProductById(pid);
             if (!producto) {
-                throw new Error('No se encontró el producto seleccionado');
+                const ticketError = TicketErrors(producto).PRODUCTO_BY_ID_ERROR;
+                const errorTicket = CustomError.generateCustomError(
+                    ticketError.name,
+                    ticketError.message,
+                    ticketError.cause
+                );
+                throw new Error(errorTicket.cause);
             }
             return producto.toObject();
         } catch (error) {
-            throw new Error("Error al obtener el producto");
+            const ticketError = TicketErrors(producto).PRODUCTO_BY_ID_SERVER_ERROR;
+                const errorTicket = CustomError.generateCustomError(
+                    ticketError.name,
+                    ticketError.message,
+                    ticketError.cause
+                );
+            throw new Error(errorTicket.message);
         }
     };
 
@@ -115,10 +135,22 @@ export class TicketService {
                 const productInDB = await this.productsRepository.modelProductById(productId);
 
                 if (!productInDB) {
-                    throw new Error(`No se encontró el producto con ID: ${productId}`);
+                    const ticketError = TicketErrors(productInDB).PRODUCTO_BY_ID_TICKET_ERROR;
+                    const errorTicket = CustomError.generateCustomError(
+                        ticketError.name,
+                        ticketError.message,
+                        ticketError.cause
+                    );
+                    throw new Error(errorTicket.message);
                 }
                 if (productInDB.stock < quantity) {
-                    throw new Error(`No hay suficiente stock para el producto con ID: ${productId}`);
+                    const ticketError = TicketErrors(productInDB).STOCK_ERROR;
+                    const errorTicket = CustomError.generateCustomError(
+                        ticketError.name,
+                        ticketError.message,
+                        ticketError.cause
+                    );
+                    throw new Error(errorTicket.message);
                 }
                 productInDB.stock -= quantity;
                 await this.ticketRepository.modelUpdateProduct(productInDB);
@@ -130,8 +162,14 @@ export class TicketService {
 
             return createdTicket;
         } catch (error) {
+            const ticketError = TicketErrors().TICKET_ERROR;
+                const errorTicket = CustomError.generateCustomError(
+                    ticketError.name,
+                    ticketError.message,
+                    ticketError.cause
+                );
             console.error("Error al crear el ticket:", error);
-            throw error;
+            throw new Error(errorTicket.cause);
         }
     };
 }

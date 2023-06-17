@@ -7,7 +7,7 @@ export const getUser = async (req, res) => {
         const user = await userService.getUser();
         res.status(200).send({ user });
     } catch (error) {
-        res.status(500).send({ error: error.message });
+        res.status(500).send({ error: error });
     }
 };
 
@@ -29,7 +29,7 @@ export const registerUser = async (req, res) => {
             return res.send(result);
         }
     } catch (error) {
-        return res.status(500).send({ status: "error", error: "Server error" });
+        return res.status(500).send({ status: "error", error: error });
     }
 };
 
@@ -42,6 +42,7 @@ export const loginUser = async (req, res) => {
         }
         res.send(result);
     } catch (error) {
+        return res.status(500).send({ status: "error", error: error });
     }
 };
 
@@ -54,6 +55,6 @@ export const logoutUser = async (req, res) => {
         return res.send(result);
     }
     } catch (error) {
-        return res.status(500).send({ status: "error", error: "Server error" });
+        return res.status(500).send({ status: "error", error: error });
     }
 };

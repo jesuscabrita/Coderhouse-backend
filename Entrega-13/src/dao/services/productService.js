@@ -1,3 +1,5 @@
+import { CustomError } from "../../error/CustomError.js";
+import { ProductErrors } from "../../error/diccionario.error.js";
 import { ProductsRepository } from "../repositories/productRepository.js";
 
 export class ProductsService {
@@ -37,7 +39,13 @@ export class ProductsService {
             const data = await this.productsRepository.modelProductPaginate(filter, options);
             const products = data.docs.map((product) => product.toObject());
             if (products.length === 0) {
-                throw new Error("No se encontró el producto que buscas.");
+                const productoError = ProductErrors().PRODUCTO_BY_ID_ERROR;
+                const errorProducto = CustomError.generateCustomError(
+                    productoError.name,
+                    productoError.message,
+                    productoError.cause
+                );
+                throw new Error(errorProducto.message);
             }
 
             const totalPages = data.totalPages;
@@ -63,6 +71,7 @@ export class ProductsService {
             };
             return response;
         } catch (error) {
+
             throw new Error("Error al obtener los productos");
         }
     };
@@ -71,11 +80,23 @@ export class ProductsService {
         try {
             const producto = await this.productsRepository.modelProductById(id);
             if (!producto) {
-                throw new Error('No se encontró el producto seleccionado');
+                const productoError = ProductErrors().PRODUCTO_BY_ID_ERROR;
+                const errorProducto = CustomError.generateCustomError(
+                    productoError.name,
+                    productoError.message,
+                    productoError.cause
+                );
+                throw new Error(errorProducto.message);
             }
             return producto.toObject();
         } catch (error) {
-            throw new Error("Error al obtener el producto");
+            const productoError = ProductErrors().PRODUCTO_SERVER_ERROR;
+                const errorProducto = CustomError.generateCustomError(
+                    productoError.name,
+                    productoError.message,
+                    productoError.cause
+                );
+            throw new Error(errorProducto.message);
         }
     };
 
@@ -143,8 +164,6 @@ export class ProductsService {
         await this.productsRepository.modelProductEdit(
             id,
             updatedProduct
-            // { _id: id }, 
-            // { $set: updatedProduct }
             )
 
         return updatedProduct;

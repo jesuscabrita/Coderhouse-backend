@@ -1,3 +1,5 @@
+import { CustomError } from "../../error/CustomError.js";
+import { CartErrors } from "../../error/diccionario.error.js";
 import { CartRepository } from "../repositories/cartRepository.js";
 
 export class CartService {
@@ -51,12 +53,24 @@ export class CartService {
             const carritos = await this.getUser();
             const carrito = carritos.find((e) => e.cart._id.toString() === carritoId);
             if (!carrito) {
-                throw new Error(`No se encontró el carrito con id ${carritoId}`);
+                const carritoError = CartErrors(carrito).CARRITO_BY_ID_ERROR;
+                const errorCarrito = CustomError.generateCustomError(
+                    carritoError.name,
+                    carritoError.message,
+                    carritoError.cause
+                );
+                throw new Error(errorCarrito.message);
             }
 
             const product = await this.cartRepository.modelProductAdd(productId);
             if (!product) {
-                throw new Error(`No se encontró el producto con id ${productId}`);
+                const productoError = CartErrors(product).PRODUCTO_BY_ID_ERROR;
+                const errorProducto = CustomError.generateCustomError(
+                    productoError.name,
+                    productoError.message,
+                    productoError.cause
+                );
+                throw new Error(errorProducto.message);
             }
 
             const existingProduct = carrito.cart.products.find((e) => e.product._id.toString() === productId);
@@ -72,7 +86,6 @@ export class CartService {
             const updatedCart = await this.cartRepository.modelUserfindByIdAndUpdate(
                 carrito._id,
                 carrito,
-                // { new: true }
             );
 
             return updatedCart.toObject();
@@ -86,20 +99,31 @@ export class CartService {
             const carts = await this.getUser();
             const cart = carts.find((e) => e.cart._id.toString() === cartId);
             if (!cart) {
-                throw new Error(`No se encontró el carrito con id ${cartId}`);
+                const carritoError = CartErrors(cart).CARRITO_BY_ID_ERROR;
+                const errorCarrito = CustomError.generateCustomError(
+                    carritoError.name,
+                    carritoError.message,
+                    carritoError.cause
+                );
+                throw new Error( errorCarrito.message);
             }
     
             const productIndex = cart.cart.products.findIndex((p) => p._id.toString() === productId);
             console.log('productoId', productIndex);
             if (productIndex === -1) {
-                throw new Error(`No se encontró el producto con id ${productId} en el carrito`);
+                const productoError = CartErrors(productIndex).PRODUCTO_BY_ID_ERROR;
+                const errorProducto = CustomError.generateCustomError(
+                    productoError.name,
+                    productoError.message,
+                    productoError.cause
+                );
+                throw new Error(errorProducto.message);
             }
     
             cart.cart.products.splice(productIndex, 1);
             const updatedCart = await this.cartRepository.modeldeleteProduct(
                 cart._id,
                 cart.cart,
-                // { new: true }
             );
     
             return updatedCart.toObject();
@@ -112,15 +136,19 @@ export class CartService {
         const carts = await this.getCarts();
         const cartIndex = carts.findIndex((c) => c._id == cartID);
         if (cartIndex === -1) {
-            throw new Error("El carrito no existe");
+            const carritoError = CartErrors(cartIndex).CARRITO_BY_ID_ERROR;
+                const errorCarrito = CustomError.generateCustomError(
+                    carritoError.name,
+                    carritoError.message,
+                    carritoError.cause
+                );
+            throw new Error(errorCarrito.message);
         }
         const cart = carts[cartIndex];
         cart.products = newProducts;
         const updatedCart = await this.cartRepository.modelCartfindByIdAndUpdate(
             cart._id,
             newProducts
-            // { products: newProducts },
-            // { new: true }
         );
         return updatedCart.toObject();
     };
@@ -129,18 +157,29 @@ export class CartService {
         const carts = await this.getCarts();
         const cartIndex = carts.findIndex((c) => c._id == cartID);
         if (cartIndex === -1) {
-            throw new Error("El carrito no existe");
+            const carritoError = CartErrors(cartIndex).CARRITO_BY_ID_ERROR;
+                const errorCarrito = CustomError.generateCustomError(
+                    carritoError.name,
+                    carritoError.message,
+                    carritoError.cause
+                );
+            throw new Error(errorCarrito.message);
         }
         const cart = carts[cartIndex];
         const productIndex = cart.products.findIndex((p) => p._id == productID);
         if (productIndex === -1) {
-            throw new Error("El producto no existe en el carrito");
+            const productoError = CartErrors(productIndex).PRODUCTO_BY_ID_ERROR;
+                const errorProducto = CustomError.generateCustomError(
+                    productoError.name,
+                    productoError.message,
+                    productoError.cause
+                );
+            throw new Error(errorProducto.message);
         }
         cart.products[productIndex].quantity = quantity;
         const updatedCart = await this.cartRepository.modelCartQuantity(
             cart._id,
             cart,
-            // { new: true }
         );
         return updatedCart.toObject();
     };

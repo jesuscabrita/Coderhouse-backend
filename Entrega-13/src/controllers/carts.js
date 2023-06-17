@@ -30,8 +30,8 @@ export const addCarts = async (req, res) => {
         cart.id = cartId;
         const updatedCart = await cartsService.addCart(cart);
         return res.status(201).send({ status: 'Succes', message: 'Se creo el carritoo correctamente', updatedCart });
-    } catch (err) {
-        return res.status(400).send({ status: "Error", error: err.message });
+    } catch (error) {
+        return res.status(400).send({ status:'error', error: error.message});
     }
 };
 
@@ -42,8 +42,8 @@ export const addProducts = async (req, res) => {
         const carritoID = req.params.cid;
         const cart = await cartsService.addProducts(productID, carritoID, product.quantity || 1);
         return res.status(201).send({ status: 'Success', message: 'Se creo el producto correctamente', result: cart });
-    } catch (err) {
-        return res.status(400).send({ status: "Error", error: err.message });
+    } catch (error) {
+        return res.status(400).send({ status:'error', error: error.message});
     }
 };
 
@@ -53,8 +53,8 @@ export const productDelete = async (req, res) => {
         const productId = req.params.pid;
         const cart = await cartsService.eliminarProducto(productId,cartId)
         return res.status(200).send({ status: 'Success', message: 'Se elimino el producto correctamente', result: cart });
-    } catch (err) {
-        return res.status(400).send({ status: "Error", error: err.message });
+    } catch (error) {
+        return res.status(400).send({ status:'error', error: error.message});
     }
 };
 
@@ -64,8 +64,8 @@ export const editProduct = async (req, res) => {
         const carritoID = req.params.cid;
         const cart = await cartsService.editarCart(carritoID, newProducts);
         return res.status(200).send({ status: 'Success', message: 'Se actualizaron los productos correctamente', result: cart });
-    } catch (err) {
-        return res.status(400).send({ status: "Error", error: err.message });
+    } catch (error) {
+        return res.status(400).send({ status:'error', error: error.message });
     }
 };
 
@@ -76,7 +76,7 @@ export const editQuantity = async (req, res) => {
         const productID = pid;
         const updatedCart = await cartsService.updateProductQuantity(productID, cid, quantity);
         return res.status(200).send({ status: 'Success', message: 'Se actualizó la cantidad de unidades del producto correctamente', result: updatedCart });
-    } catch (err) {
-        return res.status(400).send({ status: "Error", error: err.message });
+    } catch (error) {
+        return res.status(400).send({ status:'error', error: error.message });
     }
 };

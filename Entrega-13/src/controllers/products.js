@@ -10,7 +10,7 @@ export const getProducts = async (req, res) => {
         const response = await productService.getProducts(limit, page, query);
         res.status(200).send(response);
     } catch (error) {
-        res.status(404).send({ error: error.message });
+        res.status(404).send({ status:'error', error: error.message });
     }
 };
 
@@ -20,7 +20,7 @@ export const getProductsById = async (req, res) => {
         const producto = await productService.getProductById(pid);
         return res.status(200).send({ producto });
     } catch (error) {
-        return res.status(404).send({ error: error.message });
+        return res.status(404).send({ status:'error', error: error.message });
     }
 };
 
@@ -32,8 +32,8 @@ export const addProducts = async (req, res) => {
             title, description, price, thumbnailUrl, code, stock, category
         );
         return res.status(201).send({ status: 'Succes', message: 'Se creó el producto correctamente', product: newProduct });
-    } catch (err) {
-        return res.status(400).send({ status: "Error", error: err.message });
+    } catch (error) {
+        return res.status(400).send({ status:'error', error: error.message });
     }
 };
 

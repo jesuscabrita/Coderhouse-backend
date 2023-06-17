@@ -1,6 +1,8 @@
 import { UserRepository } from "../repositories/userRepository.js";
 import { createHash, isValidPassword } from "../../middlewares/hash.js";
 import jwt from "jsonwebtoken";
+import { UserErrors } from "../../error/diccionario.error.js";
+import { CustomError } from "../../error/CustomError.js";
 
 export class UserService {
     static instance = null;
@@ -37,7 +39,13 @@ export class UserService {
         try {
             const userExists = await this.userRepository.modelRegisterAndLogin( email );
             if (userExists) {
-                return { status: "error", error: `El usuario ${email} ya existe` };
+                const userError = UserErrors(email).USER_EXISTENTE_ERROR;
+                const errorUser = CustomError.generateCustomError(
+                    userError.name,
+                    userError.message,
+                    userError.cause
+                );
+                return { status: 'error', error: errorUser };
             }
             const cart = await this.userRepository.modelCartCreate();
 
@@ -53,7 +61,13 @@ export class UserService {
             await this.userRepository.modelUserCreate(user);
             return { status: "success", message: "Usuario registrado" };
         } catch (error) {
-            return { status: "error", error: "Error interno del servidor" };
+            const userError = UserErrors(email).REGISTRATION_ERROR;
+            const errorUser = CustomError.generateCustomError(
+                userError.name,
+                userError.message,
+                userError.cause
+            );
+            return { status: "error", error: errorUser };
         }
     };
 
@@ -61,12 +75,24 @@ export class UserService {
         try {
             const user = await this.userRepository.modelRegisterAndLogin( email );
             if (!user) {
-                return { status: "error", error: "Correo electrónico incorrecto" };
+                const userError = UserErrors(email).CORREO_ERROR;
+                const errorUser = CustomError.generateCustomError(
+                userError.name,
+                userError.message,
+                userError.cause
+                );
+                return { status: "error", error: errorUser };
             }
 
             const validPassword = isValidPassword(user, password);
             if (!validPassword) {
-                return { status: "error", error: "Contraseña incorrecta" };
+                const userError = UserErrors(email).CONTRASEÑA_ERROR;
+                const errorUser = CustomError.generateCustomError(
+                userError.name,
+                userError.message,
+                userError.cause
+                );
+                return { status: "error", error: errorUser };
             }
 
             const { email: userEmail, role: userRole } = user;
@@ -91,7 +117,13 @@ export class UserService {
                 payload: req.session.user,
             };
         } catch (error) {
-            return { status: "error", error: "Error interno del servidor" };
+            const userError = UserErrors(email).LOGIN_ERROR;
+                const errorUser = CustomError.generateCustomError(
+                userError.name,
+                userError.message,
+                userError.cause
+                );
+            return { status: "error", error: errorUser };
         }
     };
 
@@ -100,7 +132,13 @@ export class UserService {
             req.session.destroy();
             return { status: "success", message: "Sesión cerrada" };
         } catch (error) {
-            return { status: "error", error: "Error interno del servidor" };
+            const userError = UserErrors(email).USER_LOGOUT_ERROR;
+                const errorUser = CustomError.generateCustomError(
+                userError.name,
+                userError.message,
+                userError.cause
+                );
+            return { status: "error", error: errorUser };
         }
     };
 }

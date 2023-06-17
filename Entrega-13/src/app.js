@@ -14,6 +14,7 @@ import cors from "cors";
 import __dirname from "./utils.js";
 import { plugin_Rutas } from "./router/routes.js";
 import compression from "express-compression";
+import { errorMiddleware } from "./middlewares/error.js";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/", express.static(`${__dirname}/public`));
 app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(passport.initialize());
+app.use(errorMiddleware);
 initializePassport();
 app.use(
     session({
