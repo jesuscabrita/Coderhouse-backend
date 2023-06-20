@@ -109,7 +109,7 @@ export class TicketService {
     };
 
     createTicket = async (userId) => {
-        try {
+        // try {
             const user = await this.getUserById(userId);
             const cartProducts = user.cart.products;
             if (cartProducts.length === 0) {
@@ -144,7 +144,7 @@ export class TicketService {
                     throw new Error(errorTicket.message);
                 }
                 if (productInDB.stock < quantity) {
-                    const ticketError = TicketErrors(productInDB).STOCK_ERROR;
+                    const ticketError = TicketErrors(productInDB.title).STOCK_ERROR;
                     const errorTicket = CustomError.generateCustomError(
                         ticketError.name,
                         ticketError.message,
@@ -161,15 +161,15 @@ export class TicketService {
             await this.ticketRepository.modelUserUpdateOne({ _id: user._id }, { cart: user.cart }); // Guardar los cambios en el usuario en la base de datos
 
             return createdTicket;
-        } catch (error) {
-            const ticketError = TicketErrors().TICKET_ERROR;
-                const errorTicket = CustomError.generateCustomError(
-                    ticketError.name,
-                    ticketError.message,
-                    ticketError.cause
-                );
-            console.error("Error al crear el ticket:", error);
-            throw new Error(errorTicket.cause);
-        }
+        // } catch (error) {
+        //     const ticketError = TicketErrors().TICKET_ERROR;
+        //         const errorTicket = CustomError.generateCustomError(
+        //             ticketError.name,
+        //             ticketError.message,
+        //             ticketError.cause
+        //         );
+        //     console.error("Error al crear el ticket:", error);
+        //     throw new Error(errorTicket.cause);
+        // }
     };
 }

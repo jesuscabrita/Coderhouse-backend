@@ -15,6 +15,7 @@ import __dirname from "./utils.js";
 import { plugin_Rutas } from "./router/routes.js";
 import compression from "express-compression";
 import { errorMiddleware } from "./middlewares/error.js";
+import { addLogger } from "./middlewares/logger.js";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(errorMiddleware);
+app.use(addLogger);
 initializePassport();
 app.use(
     session({
