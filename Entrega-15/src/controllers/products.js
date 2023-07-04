@@ -28,8 +28,9 @@ export const addProducts = async (req, res) => {
     try {
         const { title, description, price, code, stock, category } = req.body;
         const thumbnailUrl = req?.files?.map(file => `http://localhost:8080/images/${file.filename}`)
+        const currentUser = req.session.user
         const newProduct = await productService.addProduct(
-            title, description, price, thumbnailUrl, code, stock, category
+            title, description, price, thumbnailUrl, code, stock, category, currentUser
         );
         return res.status(201).send({ status: 'Succes', message: 'Se creó el producto correctamente', product: newProduct });
     } catch (error) {

@@ -123,13 +123,15 @@ export class ProductsService {
         }
     }
 
-    addProduct = async (title, description, price, thumbnail, code, stock, category) => {
+    addProduct = async (title, description, price, thumbnail, code, stock, category,currentUser) => {
         this.validateProductData(title, description, price, stock, category);
         const { payload } = await this.getProducts();
         const codigo = await this.checkProductCode(code);
         if (codigo) {
             throw new Error(`El código "${code}" ya existe`);
         }
+        const owner = currentUser && currentUser.email ? currentUser.email : "admin";
+
         const newProduct = {
             title: title.trim(),
             description: description.trim(),
@@ -139,6 +141,7 @@ export class ProductsService {
             stock: parseInt(stock),
             status: stock < 1 ? false : true,
             category: category.trim(),
+            owner: owner 
         }
         payload?.push(newProduct)
         await this.productsRepository.modelProductCreate(newProduct)

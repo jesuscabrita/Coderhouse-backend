@@ -11,8 +11,9 @@ export const productsSchema = new Schema(
         thumbnail: { type: [String], default: []},
         code: { type: String },
         stock: { type: Number },
-        status: {type: Boolean },
-        category: {type: String},
+        status: { type: Boolean },
+        category: { type: String},
+        owner: { type: String },
     },
     { timestamps: true }
 );

@@ -25,17 +25,17 @@ export class UserService {
     isValidResetToken = async (token) => {
         try {
             const decodedToken = jwt.verify(token, 'secret');
-    
-            const currentTimestamp = Math.floor(Date.now() / 1000); 
+
+            const currentTimestamp = Math.floor(Date.now() / 1000);
             const isTokenExpired = decodedToken.exp < currentTimestamp;
-    
+
             if (isTokenExpired) {
-                return false; 
+                return false;
             }
-    
+
             const validTokens = [decodedToken.userId];
             const isTokenValid = validTokens.includes(decodedToken.userId);
-    
+
             return isTokenValid;
         } catch (error) {
             return false;
@@ -222,7 +222,7 @@ export class UserService {
 
             return { status: "success", message: "Contraseña restablecida correctamente." };
         } catch (error) {
-            console.error(error); 
+            console.error(error);
             return { status: "error", error: "Error interno: " + error.message };
         }
     };
