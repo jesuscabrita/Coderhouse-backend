@@ -10,8 +10,13 @@ const ticketService = TicketService.getInstance();
 
 export const getResetPassword = async (req, res) => {
     const resetToken = req.params.resetToken;
-    res.render("Reset", { title: "Reset", resetToken, user: req.session.user });
-};
+    const isTokenValid = await userService.isValidResetToken(resetToken);
+    if (isTokenValid) {
+        res.render("Reset", { title: "Reset", resetToken, user: req.session.user });
+    } else {
+        res.render("reset-error", { message: "El token ha expirado o no es válido." });
+
+}}
 
 export const getSolicitud = async (req, res) => {
     res.render("solicitud", { title: "Solicitud", user: req.session.user });

@@ -17,31 +17,28 @@ export class UserService {
         this.userRepository = UserRepository.getInstance();
     }
 
-    // Generar un token
-    generateToken = (userId) => {
-        const token = jwt.sign({ userId }, 'secret', { expiresIn: '1m' });
+    generateToken = (userId, expiresIn) => {
+        const token = jwt.sign({ userId }, 'secret', { expiresIn });
         return token;
     }
 
-    // Verificar si un token es válido
-    isValidResetToken = (token) => {
+    isValidResetToken = async (token) => {
         try {
             const decodedToken = jwt.verify(token, 'secret');
-
+    
+            const currentTimestamp = Math.floor(Date.now() / 1000); 
+            const isTokenExpired = decodedToken.exp < currentTimestamp;
+    
+            if (isTokenExpired) {
+                return false; 
+            }
+    
             const validTokens = [decodedToken.userId];
             const isTokenValid = validTokens.includes(decodedToken.userId);
-
-            if (!isTokenValid) {
-                throw new Error("El token no es válido.");
-            } else {
-                console.log('Token válido');
-            }
+    
+            return isTokenValid;
         } catch (error) {
-            if (error.name === "TokenExpiredError") {
-                throw new Error(error, "El token ha expirado.");
-            } else {
-                throw new Error("El token no es válido");
-            }
+            return false;
         }
     };
 
@@ -195,7 +192,7 @@ export class UserService {
             if (!user) {
                 throw new Error('Correo electrónico no encontrado');
             }
-            const resetToken = this.generateToken(user.id);
+            const resetToken = this.generateToken(user.id, '4m');
 
             this.isValidResetToken(resetToken);
 
@@ -208,30 +205,25 @@ export class UserService {
         }
     }
 
-    restablecerContraseña = async (userId, newPassword) => {
+    restablecerContraseña = async (email, newPassword) => {
         try {
-            // Obtener el usuario por su ID
-            const user = await this.getUserById(userId);
+            const user = await this.findByEmail(email);
             console.log('usuario', user);
 
             if (!user) {
                 throw new Error("No se encuentra ese usuario");
             }
-
-            // Verificar si la nueva contraseña es igual a la contraseña actual del usuario
             const isSamePassword = isValidPassword(user, newPassword);
             if (isSamePassword) {
                 throw new Error("No puedes usar la misma contraseña anterior.");
             }
-
-            // Actualizar la contraseña del usuario
             const hashedPassword = createHash(newPassword);
-            await this.userRepository.modelUpdateUserPassword(userId, hashedPassword);
+            await this.userRepository.modelUpdateUserPassword(email, hashedPassword);
 
             return { status: "success", message: "Contraseña restablecida correctamente." };
         } catch (error) {
-            console.error(error); // Muestra el error completo en la consola del servidor para obtener más detalles
-            return { status: "error", error: "Error interno: " + error.message }; // Devuelve un mensaje de error más detallado
+            console.error(error); 
+            return { status: "error", error: "Error interno: " + error.message };
         }
     };
 }

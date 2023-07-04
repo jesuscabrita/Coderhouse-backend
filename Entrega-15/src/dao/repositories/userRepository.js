@@ -102,7 +102,7 @@ export class UserRepository {
         await userModel.updateOne({ _id: userId }, { resetToken: null });
     };
 
-    modelUpdateUserPassword =(userId, hashedPassword)=>{
-        return userModel.updateOne({ _id: userId }, { password: hashedPassword });
+    modelUpdateUserPassword =(email, hashedPassword)=>{
+        return userModel.updateOne({ email: email }, { password: hashedPassword });
     }
 }

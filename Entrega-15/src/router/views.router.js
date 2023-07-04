@@ -11,6 +11,7 @@ router.get("/register", checkLogged, getRegister);
 router.get("/profile", checkLogin, getProfile);
 router.get('/logout', getlogout);
 router.get('/Reset/:resetToken', getResetPassword);
+router.get('/reset-error', getResetPassword);
 router.get('/Solicitud', getSolicitud)
 
 router.get("/ticket/:tid",checkLogin ,getTicketById);

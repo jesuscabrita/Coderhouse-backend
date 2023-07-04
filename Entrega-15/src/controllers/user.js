@@ -71,11 +71,8 @@ export const solicitarContraseña = async (req, res) => {
 
 export const cambioContraseña = async (req, res) => {
     try {
-        const { userId, newPassword } = req.body;
-
-        // Llamar al método restablecerContraseña del servicio UserService
-        const result = await userService.restablecerContraseña(userId,newPassword);
-
+        const { email, newPassword } = req.body;
+        const result = await userService.restablecerContraseña(email,newPassword);
         if (result.status === "success") {
             return res.status(200).send({ status: "success", message: result.message });
         } else {
