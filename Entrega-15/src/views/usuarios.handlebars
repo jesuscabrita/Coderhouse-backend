@@ -1,0 +1,72 @@
+<section class="vh-100" style="height: 100%;">
+    <div class="container py-5 h-100" style="height: 100%;">
+        <div class="row d-flex justify-content-center align-items-center h-100" style="height: 100%;">
+            <div class="col col-lg-6 mb-4 mb-lg-0" style="height: 100%;">
+                <div class="card mb-3" style="border-radius: .5rem;">
+                    <div class="card-body p-4" style="height: 100%;">
+                        <h6>Usuarios</h6>
+                        <hr class="mt-0 mb-4">
+                        {{#each usuarios}}
+                        <div class="row pt-1">
+                            <div class="col-6 mb-3">
+                                <h6>Email</h6>
+                                <p class="text-muted">{{email}}</p>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>Nombre</h6>
+                                <p class="text-muted">{{first_name}}</p>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>Apellido</h6>
+                                <p class="text-muted">{{last_name}}</p>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>Rol</h6>
+                                <select name="role" class="form-control" data-user="{{_id}}">
+                                    <option value="usuario" {{#if (eq role "usuario")}}selected{{/if}}>Usuario</option>
+                                    <option value="premium" {{#if (eq role "premium")}}selected{{/if}}>Premium</option>
+                                    <option value="admin" {{#if (eq role "admin")}}selected{{/if}}>Admin</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <button class="btn btn-primary" type="button" onclick="cambiarRol('{{_id}}')">Cambiar Rol</button>
+                            </div>
+                            <hr class="mt-0 mb-4">
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function cambiarRol(userId) {
+        var selectElement = document.querySelector(`select[name="role"][data-user="${userId}"]`);
+        var selectedRole = selectElement.value;
+
+        fetch(`http://localhost:8080/api/sessions/user/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ role: selectedRole })
+        })
+        .then(response => {
+            if (response.ok) {
+                // El cambio de rol fue exitoso, muestra una alerta
+                window.alert('Se cambió el rol del usuario correctamente');
+                // Actualiza la página para ver los cambios
+                window.location.reload();
+            } else {
+                // Hubo un error al cambiar el rol, puedes mostrar un mensaje de error o realizar alguna acción adicional si lo deseas
+                console.error('Error al cambiar el rol');
+            }
+        })
+        .catch(error => {
+            // Hubo un error de red u otro tipo de error, puedes manejarlo aquí
+            console.error('Error al enviar la petición', error);
+        });
+    }
+</script>

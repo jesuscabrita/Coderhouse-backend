@@ -6,6 +6,7 @@
         <h5 class="card-title">{{title}}</h5>
         <p class="card-text">{{description}}</p>
         <p class="card-text">{{code}}</p>
+        <p class="card-text">{{owner}}</p>
         <button data-productid="{{this._id}}" onclick="addToCart('{{this._id}}')" class="btn btn-primary">Añadir</button>
         <button data-productid="{{this._id}}" onclick="deleteToCart('{{this._id}}')" class="btn btn-danger">Eliminar</button>
         <a href="/product/{{_id}}" class="btn btn-info">Info</a>

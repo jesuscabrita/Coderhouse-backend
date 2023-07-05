@@ -8,6 +8,11 @@ const chatService = ChatService.getInstance();
 const userService = UserService.getInstance();
 const ticketService = TicketService.getInstance();
 
+export const getUsuariosAdmin = async (req, res) => {
+    const usuarios = await userService.getUser()
+    res.render("usuarios", { title: "Usuarios", user: req.session.user, usuarios: usuarios });
+};
+
 export const getResetPassword = async (req, res) => {
     const resetToken = req.params.resetToken;
     const isTokenValid = await userService.isValidResetToken(resetToken);

@@ -105,4 +105,8 @@ export class UserRepository {
     modelUpdateUserPassword =(email, hashedPassword)=>{
         return userModel.updateOne({ email: email }, { password: hashedPassword });
     }
+
+    modelUserEdit = (userId, updatedUser) => {
+        return userModel.updateOne({ _id: userId }, { $set: updatedUser })
+    }
 }

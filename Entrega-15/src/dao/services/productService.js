@@ -91,11 +91,11 @@ export class ProductsService {
             return producto.toObject();
         } catch (error) {
             const productoError = ProductErrors().PRODUCTO_SERVER_ERROR;
-                const errorProducto = CustomError.generateCustomError(
-                    productoError.name,
-                    productoError.message,
-                    productoError.cause
-                );
+            const errorProducto = CustomError.generateCustomError(
+                productoError.name,
+                productoError.message,
+                productoError.cause
+            );
             throw new Error(errorProducto.message);
         }
     };
@@ -123,7 +123,7 @@ export class ProductsService {
         }
     }
 
-    addProduct = async (title, description, price, thumbnail, code, stock, category,currentUser) => {
+    addProduct = async (title, description, price, thumbnail, code, stock, category, currentUser) => {
         this.validateProductData(title, description, price, stock, category);
         const { payload } = await this.getProducts();
         const codigo = await this.checkProductCode(code);
@@ -141,7 +141,7 @@ export class ProductsService {
             stock: parseInt(stock),
             status: stock < 1 ? false : true,
             category: category.trim(),
-            owner: owner 
+            owner: owner
         }
         payload?.push(newProduct)
         await this.productsRepository.modelProductCreate(newProduct)
@@ -167,20 +167,24 @@ export class ProductsService {
         await this.productsRepository.modelProductEdit(
             id,
             updatedProduct
-            )
+        )
 
         return updatedProduct;
     }
 
-    eliminarProducto = async (id) => {
-        const { payload } = await this.getProducts();
-        const index = payload.find((p) => p._id == id);
-        if (index === -1) {
-            throw new Error(`No se encontró el producto con ID ${id}`);
-        }
-        payload.splice(index, 1);
-        await this.productsRepository.modelProductDelete(id)
+    eliminarProducto = async (id, currentUser) => {
+        const  payload  = await this.getProductById(id)
+        console.log('index', payload);
+        const product = payload;
+        const userRole = currentUser && currentUser.role ? currentUser.role : "usuario";
+        const userOwner = currentUser && currentUser.email ? currentUser.email : "";
 
-        return `Se eliminó el producto ${id} correctamente`;
+        if (userRole === "admin" || (userRole === "premium" && product && product.owner === userOwner)) {
+            // payload.splice(payload, 1);
+            await this.productsRepository.modelProductDelete(id)
+            return `Se eliminó el producto ${id} correctamente`;
+        } else {
+            throw new Error("No tienes permisos para eliminar este producto");
+        }
     }
 }

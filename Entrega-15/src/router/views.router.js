@@ -2,7 +2,7 @@ import { Router } from "express";
 import { checkLogged, checkLogin } from "../middlewares/auth.js";
 import { passportCall } from "../middlewares/passportCall.js";
 import { authorization } from "../middlewares/authorization.js";
-import { addProduct, getAdmin, getCartById, getChat, getHomeProduct, getLogin, getProduct, getProductById, getProfile, getRealtimeproducts, getRegister, getResetPassword, getSolicitud, getTicketById, getlogout } from "../controllers/views.js";
+import { addProduct, getAdmin, getCartById, getChat, getHomeProduct, getLogin, getProduct, getProductById, getProfile, getRealtimeproducts, getRegister, getResetPassword, getSolicitud, getTicketById, getUsuariosAdmin, getlogout } from "../controllers/views.js";
 
 const router = Router();
 
@@ -13,6 +13,7 @@ router.get('/logout', getlogout);
 router.get('/Reset/:resetToken', getResetPassword);
 router.get('/reset-error', getResetPassword);
 router.get('/Solicitud', getSolicitud)
+router.get("/usuarios",checkLogin ,getUsuariosAdmin);
 
 router.get("/ticket/:tid",checkLogin ,getTicketById);
 router.get("/addProduct", checkLogin, authorization("admin") ,addProduct);

@@ -55,8 +55,9 @@ export const editProducts = async (req, res) => {
 
 export const deleteProducts = async (req, res) => {
     const productId = req.params.id;
+    const currentUser = req.session.user
     try {
-        const message = await productService.eliminarProducto(productId);
+        const message = await productService.eliminarProducto(productId,currentUser);
         return res.status(200).send({ status: "Success", message });
     } catch (error) {
         return res.status(404).send({ status: "Error", message: error.message });

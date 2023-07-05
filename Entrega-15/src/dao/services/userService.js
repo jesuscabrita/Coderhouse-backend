@@ -226,4 +226,23 @@ export class UserService {
             return { status: "error", error: "Error interno: " + error.message };
         }
     };
+
+    editarUsuario = async (userId, changes) => {
+        try {
+            const usuarios = await this.getUser();
+            const usuarioIndex = usuarios.findIndex((user) => user._id == userId);
+            if (usuarioIndex === -1) {
+                throw new Error(`No se encontró el usuario con ID ${userId}`);
+            }
+            const updatedUser = {
+                ...usuarios[usuarioIndex],
+                ...changes,
+            };
+            usuarios[usuarioIndex] = updatedUser;
+            await this.userRepository.modelUserEdit(userId, updatedUser);
+            return updatedUser;
+        } catch (error) {
+            throw new Error('no se pudo editar , error interno')
+        }
+    }
 }

@@ -9,6 +9,6 @@ router.get("/", getProducts);
 router.get("/:pid", getProductsById);
 router.post("/", authorization("admin"),uploader.array("thumbnail", 10), addProducts);
 router.put("/:id", uploader.array("thumbnail", 10), authorization("admin"),editProducts);
-router.delete("/:id",authorization("admin") ,deleteProducts);
+router.delete("/:id" ,deleteProducts);
 
 export default router;
