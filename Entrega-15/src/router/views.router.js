@@ -13,7 +13,7 @@ router.get('/logout', getlogout);
 router.get('/Reset/:resetToken', getResetPassword);
 router.get('/reset-error', getResetPassword);
 router.get('/Solicitud', getSolicitud)
-router.get("/usuarios",checkLogin ,getUsuariosAdmin);
+router.get("/usuarios",checkLogin ,authorization("admin"),getUsuariosAdmin);
 
 router.get("/ticket/:tid",checkLogin ,getTicketById);
 router.get("/addProduct", checkLogin, authorization("admin") ,addProduct);
