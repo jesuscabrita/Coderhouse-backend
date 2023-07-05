@@ -63,7 +63,7 @@
                 if (error.message === 'No permissions') {
                     alert('No tienes permisos para agregar el producto');
                 } else {
-                    alert('Error al agregar el producto');
+                    alert(error.message);
                 }
             });
     }
@@ -73,17 +73,14 @@
             method: 'DELETE'
         })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('No se pudo eliminar el producto');
-                }
+                
                 return response.json();
             })
             .then(data => {
                 console.log('Producto eliminado:', data);
-                alert('Producto eliminado');
+                alert(data.message);
             })
             .catch(error => {
-                console.error('Error al eliminar el producto:', error);
                 if (error.message === 'No permissions') {
                     alert('No tienes permisos para eliminar el producto');
                 } else {
