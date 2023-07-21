@@ -90,7 +90,12 @@ export class UserService {
                 role: "usuario",
             };
             await this.userRepository.modelUserCreate(user);
-            return { status: "success", message: "Usuario registrado" };
+            const token = this.generateToken(user._id, '24h')
+            return { status: "success",
+            message: "Usuario registrado",
+            token: token, 
+            payload: user, 
+        };
         } catch (error) {
             const userError = UserErrors(email).REGISTRATION_ERROR;
             const errorUser = CustomError.generateCustomError(

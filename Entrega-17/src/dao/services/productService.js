@@ -144,26 +144,26 @@ export class ProductsService {
             owner: owner
         }
         payload?.push(newProduct)
-        await this.productsRepository.modelProductCreate(newProduct)
+        const insertedProduct =  await this.productsRepository.modelProductCreate(newProduct)
 
-        return newProduct;
+        return insertedProduct;
     }
 
     editarProducto = async (id, changes) => {
         const { payload } = await this.getProducts();
-        const productIndex = payload.findIndex((product) => product._id == id);
-        if (productIndex === -1) {
-            throw new Error(`No se encontró el producto con ID ${id}`);
-        }
+        let productIndex = payload.find((product) => product._id == id);
+        // if (productIndex === -1) {
+        //     throw new Error(`No se encontró el producto con ID ${id}`);
+        // }
 
         const updatedProduct = {
-            ...productos[productIndex],
+            ...productIndex,
             ...changes,
             price: parseFloat(changes.price),
             stock: parseInt(changes.stock),
             status: changes.stock < 1 ? false : true,
         };
-        productos[productIndex] = updatedProduct;
+        productIndex = updatedProduct;
         await this.productsRepository.modelProductEdit(
             id,
             updatedProduct

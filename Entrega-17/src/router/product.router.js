@@ -7,8 +7,8 @@ const router = express.Router();
 
 router.get("/", getProducts);
 router.get("/:pid", getProductsById);
-router.post("/", authorization("admin"),uploader.array("thumbnail", 10), addProducts);
-router.put("/:id", uploader.array("thumbnail", 10), authorization("admin"),editProducts);
+router.post("/",uploader.array("thumbnail", 10), addProducts);
+router.put("/:id", uploader.array("thumbnail", 10), editProducts);
 router.delete("/:id" ,deleteProducts);
 
 export default router;

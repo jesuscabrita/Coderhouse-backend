@@ -42,9 +42,9 @@ export const editProducts = async (req, res) => {
     const productId = req.params.id;
     const changes = req.body;
     const thumbnailUrl = req?.files?.map(file => `http://localhost:8080/images/${file.filename}`)
-    if (!thumbnailUrl) {
-        return res.status(400).send({ status: "Error", error: "No se envio niguna imagen!!" });
-    }
+    // if (!thumbnailUrl) {
+    //     return res.status(400).send({ status: "Error", error: "No se envio niguna imagen!!" });
+    // }
     try {
         const updatedProduct = await productService.editarProducto(productId, {...changes,thumbnail :thumbnailUrl,});
         return res.status(200).send({ status: "OK", message: `El producto se edito correctamente`, updatedProduct });

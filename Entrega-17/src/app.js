@@ -19,7 +19,7 @@ import { addLogger } from "./middlewares/logger.js";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUiExpress from "swagger-ui-express";
 
-const app = express();
+export const app = express();
 
 handlebar.helpers.eq = function (a, b) { return a === b; };
 app.engine("handlebars", handlebars.engine())
