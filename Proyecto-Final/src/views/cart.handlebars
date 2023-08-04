@@ -1,0 +1,108 @@
+<div class="cart-container row" data-carritoid="{{cart.cart._id}}" data-usercardid="{{cart._id}}">
+    {{#if cart.cart.products.length}}
+        {{#each cart.cart.products}}
+        <div class="card" style="width: 18rem; margin-bottom: 20px;">
+            <div class="card-body">
+                {{#each this.product.thumbnail}}
+                <img src="{{this}}" height="150" class="card-img-top" style="object-fit:cover" alt="..." />
+                {{/each}}
+                <h5 class="card-title">{{this.product.title}}</h5>
+                <p class="card-text">{{this.product.description}}</p>
+                <p class="card-text">{{this.product.code}}</p>
+                <p class="card-text">Cantidad: {{this.quantity}}</p>
+                <button data-productid="{{this.product._id}}" data-carritoid="{{../cart.cart._id}}" class="btn btn-primary">Añadir</button>
+                <button data-deleteproduct="{{this._id}}" data-carritoid="{{../cart.cart._id}}" class="btn btn-danger">Eliminar</button>
+            </div>
+        </div>
+        {{/each}}
+    {{else}}
+        <p>No hay productos aún</p>
+    {{/if}}
+    <div>
+        <button data-cardid="{{this._id}}" data-userid="{{this.userID}}" data-usercardid="{{cart._id}}" class="btn btn-primary">Comprar</button>
+    </div>
+</div>
+
+<script>
+    const buttons = document.querySelectorAll('button[data-productid]');
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const productId = button.getAttribute('data-productid');
+            const carritoID = button.getAttribute('data-carritoid');
+            addToCart(productId, carritoID);
+        });
+    });
+    async function addToCart(productId, carritoID) {
+    try {
+        const response = await fetch(`/api/carts/${carritoID}/product/${productId}`, { method: 'POST' });
+        const cart = await response.json();
+        console.log('Producto agregado al carrito:', cart);
+        alert('Producto agregado al carrito');
+        window.location.reload();
+    } catch (error) {
+        console.error(error);
+        alert('Error al agregar el producto al carrito');
+    }
+}
+
+    const deleteButtons = document.querySelectorAll('button[data-deleteproduct]');
+
+deleteButtons.forEach(button => {
+    button.addEventListener('click', async () => {
+        const carritoID = button.getAttribute('data-carritoid');
+        const productoID = button.getAttribute('data-deleteproduct');
+        console.log('producto id:', productoID)
+
+        try {
+            const response = await fetch(`/api/carts/${carritoID}/products/${productoID}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error);
+            }
+
+            const data = await response.json();
+            console.log('Producto eliminado del carrito:', data);
+            alert('Producto eliminado del carrito');
+            window.location.reload();
+        } catch (error) {
+            console.error(error);
+            alert('Error al eliminar el producto del carrito');
+        }
+    });
+});
+
+const buttonsUser = document.querySelectorAll('button[data-cardid]');
+    buttonsUser.forEach(button => {
+        button.addEventListener('click', async () => {
+            const userID = button.getAttribute('data-userid');
+            const usercartID = button.getAttribute('data-usercardid');
+
+            try {
+                const response = await fetch(`/api/ticket/${usercartID}/purchase`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userID: userID
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error);
+                }
+                const ticket = await response.json();
+                console.log('Ticket creado:', ticket.ticket);
+                alert('Ticket creado');
+                window.location.href = `/ticket/${ticket.ticket.userID}`;
+            } catch (error) {
+                console.error('error', error);
+                alert(error);
+            }
+        });
+    });
+</script>
