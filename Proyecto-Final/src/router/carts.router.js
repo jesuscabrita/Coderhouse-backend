@@ -10,6 +10,5 @@ router.post("/", addCarts);
 router.post("/:cid/product/:pid",addProducts);
 router.delete("/:cid/products/:pid", productDelete);
 router.put("/:cid", editProduct);
-// router.put("/:cid/products/:pid", editQuantity);
 
 export default router;

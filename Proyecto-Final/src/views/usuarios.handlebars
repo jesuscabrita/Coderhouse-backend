@@ -1,3 +1,44 @@
+<style>
+    #overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .overlay-content {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .spinner {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid #ffffff;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
 <section class="vh-100" style="height: 100%;">
     <div class="container py-5 h-100" style="height: 100%;">
         <div class="row d-flex justify-content-center align-items-center h-100" style="height: 100%;">
@@ -41,6 +82,11 @@
                         {{/each}}
                     </div>
                 </div>
+                <div id="overlay" style="display: none;">
+                    <div class="overlay-content">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
                 <button class="btn btn-danger" type="button" onclick="eliminarUsuariosSinConexion()">Eliminar Usuarios sin Conexión</button>
             </div>
         </div>
@@ -49,6 +95,9 @@
 
 <script>
     function cambiarRol(userId) {
+        const overlay = document.getElementById('overlay');
+        overlay.style.display = 'block';
+
         var selectElement = document.querySelector(`select[name="role"][data-user="${userId}"]`);
         var selectedRole = selectElement.value;
 
@@ -69,8 +118,12 @@
         })
         .catch(error => {
             console.error('Error al enviar la petición', error);
+        })
+        .finally(() => {
+            overlay.style.display = 'none';
         });
     }
+
 
     function eliminarUsuario(userId) {
         var confirmacion = confirm("¿Estás seguro que deseas eliminar este usuario?");
@@ -96,6 +149,9 @@
     }
 
     function eliminarUsuariosSinConexion() {
+        const overlay = document.getElementById('overlay');
+        overlay.style.display = 'block';
+
         var confirmacion = confirm("¿Estás seguro que deseas eliminar los usuarios sin conexión?");
         if (confirmacion) {
             fetch(`http://localhost:8080/api/users/sinconexion`, {
@@ -114,7 +170,12 @@
             })
             .catch(error => {
                 console.error('Error al enviar la petición', error);
+            })
+            .finally(() => {
+                overlay.style.display = 'none';
             });
+        } else {
+            overlay.style.display = 'none';
         }
     }
 </script>

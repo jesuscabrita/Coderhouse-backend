@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { checkLogged, checkLogin } from "../middlewares/auth.js";
 import { passportCall } from "../middlewares/passportCall.js";
-import { authorization } from "../middlewares/authorization.js";
+import { auth, authorization } from "../middlewares/authorization.js";
 import { addProduct, getAdmin, getCartById, getChat, getHomeProduct, getLogin, getProduct, getProductById, getProfile, getRealtimeproducts, getRegister, getResetPassword, getSolicitud, getTicketById, getUsuariosAdmin, getlogout } from "../controllers/views.js";
 
 const router = Router();
@@ -16,7 +16,7 @@ router.get('/Solicitud', getSolicitud)
 router.get("/usuarios",checkLogin ,authorization("admin"),getUsuariosAdmin);
 
 router.get("/ticket/:tid",checkLogin ,getTicketById);
-router.get("/addProduct", checkLogin,addProduct);
+router.get("/addProduct",checkLogin,auth("usuario"),addProduct);
 router.get("/products", checkLogin, getProduct);
 router.get("/product/:pid", checkLogin, getProductById);
 router.get("/cart/:cid", checkLogin, getCartById);
