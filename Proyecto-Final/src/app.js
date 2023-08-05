@@ -11,7 +11,7 @@ import cookieParser from "cookie-parser";
 import initializePassport from "./middlewares/passport.js";
 import passport from "passport";
 import cors from "cors";
-import __dirname from "./utils.js";
+import __dirname, { sumTotalPrice } from "./utils.js";
 import { plugin_Rutas } from "./router/routes.js";
 import compression from "express-compression";
 import { errorMiddleware } from "./middlewares/error.js";
@@ -21,6 +21,7 @@ import swaggerUiExpress from "swagger-ui-express";
 
 export const app = express();
 
+handlebar.registerHelper('sumTotalPrice', sumTotalPrice);
 handlebar.helpers.eq = function (a, b) { return a === b; };
 handlebar.helpers.and = function (a, b) { return a && b; };
 app.engine("handlebars", handlebars.engine())

@@ -8,6 +8,12 @@ const chatService = ChatService.getInstance();
 const userService = UserService.getInstance();
 const ticketService = TicketService.getInstance();
 
+export const getPago = async (req, res) => {
+    const cid = req.params.cid;
+    const cart = await userService.getUserCartById(cid);
+    res.render("pago", { title: "Pago", cart: cart,user: req.session.user });
+};
+
 export const getUsuariosAdmin = async (req, res) => {
     const usuarios = await userService.getUser()
     res.render("usuarios", { title: "Usuarios", user: req.session.user, usuarios: usuarios });

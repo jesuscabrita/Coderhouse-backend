@@ -2,7 +2,8 @@ import { Router } from "express";
 import { checkLogged, checkLogin } from "../middlewares/auth.js";
 import { passportCall } from "../middlewares/passportCall.js";
 import { auth, authorization } from "../middlewares/authorization.js";
-import { addProduct, getAdmin, getCartById, getChat, getHomeProduct, getLogin, getProduct, getProductById, getProfile, getRealtimeproducts, getRegister, getResetPassword, getSolicitud, getTicketById, getUsuariosAdmin, getlogout } from "../controllers/views.js";
+import { addProduct, getAdmin, getCartById, getChat, getHomeProduct, getLogin, getPago, getProduct, getProductById, getProfile, getRealtimeproducts, getRegister, getResetPassword, getSolicitud, getTicketById, getUsuariosAdmin, getlogout } from "../controllers/views.js";
+import { createPago } from "../controllers/ticket.js";
 
 const router = Router();
 
@@ -15,6 +16,7 @@ router.get('/reset-error', getResetPassword);
 router.get('/Solicitud', getSolicitud)
 router.get("/usuarios",checkLogin ,authorization("admin"),getUsuariosAdmin);
 
+router.get("/pago/:cid",checkLogin ,getPago);
 router.get("/ticket/:tid",checkLogin ,getTicketById);
 router.get("/addProduct",checkLogin,auth("usuario"),addProduct);
 router.get("/products", checkLogin, getProduct);
@@ -24,5 +26,7 @@ router.get("/admin", checkLogin, passportCall("jwt"), authorization("admin") , g
 router.get("/realtimeproducts", checkLogin, getRealtimeproducts);
 router.get("/", checkLogin, getHomeProduct);
 router.get("/chat",authorization("usuario"),checkLogin, getChat);
+
+router.post("/charge/:uid", createPago)
 
 export default router;
