@@ -1,54 +1,59 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 import { ticketModel } from "../models/ticket.js";
 import { userModel } from "../models/user.js";
 import { productsModel } from "../models/products.js";
-import { HOST_EMAIL, PORT_EMAIL, EMAIL_PASSWORD, EMAIL_USERNAME, } from '../../config.js';
+import {
+  HOST_EMAIL,
+  PORT_EMAIL,
+  EMAIL_PASSWORD,
+  EMAIL_USERNAME,
+} from "../../config/config.js";
 
 export class TicketRepository {
-    static instance = null;
+  static instance = null;
 
-    static getInstance() {
-        if (!TicketRepository.instance) {
-            TicketRepository.instance = new TicketRepository();
-        }
-        return TicketRepository.instance;
+  static getInstance() {
+    if (!TicketRepository.instance) {
+      TicketRepository.instance = new TicketRepository();
     }
-    constructor() { }
+    return TicketRepository.instance;
+  }
+  constructor() {}
 
-    modelGetTicket = () => {
-        return ticketModel.find();
-    }
+  modelGetTicket = () => {
+    return ticketModel.find();
+  };
 
-    modelCreateTicket = (newTicket) =>{
-        return ticketModel.create(newTicket)
-    }
+  modelCreateTicket = (newTicket) => {
+    return ticketModel.create(newTicket);
+  };
 
-    modelUserUpdateOne = (filter, update) => {
-        return userModel.updateOne(filter, update);
-    };
+  modelUserUpdateOne = (filter, update) => {
+    return userModel.updateOne(filter, update);
+  };
 
-    modelUpdateProduct = (product) => {
-        return productsModel.findByIdAndUpdate(product._id, product, { new: true });
-    };
+  modelUpdateProduct = (product) => {
+    return productsModel.findByIdAndUpdate(product._id, product, { new: true });
+  };
 
-    createTransportCorreo = () => {
-        return nodemailer.createTransport({
-            host: HOST_EMAIL,
-            port: PORT_EMAIL,
-            auth: {
-                user: EMAIL_USERNAME,
-                pass: EMAIL_PASSWORD
-            },
-            tls: { rejectUnauthorized: false }
-        });
-    }
+  createTransportCorreo = () => {
+    return nodemailer.createTransport({
+      host: HOST_EMAIL,
+      port: PORT_EMAIL,
+      auth: {
+        user: EMAIL_USERNAME,
+        pass: EMAIL_PASSWORD,
+      },
+      tls: { rejectUnauthorized: false },
+    });
+  };
 
-    correoTextEnCola = (ticket) => {
-        return {
-            from: '"Supermercado 👻" <jesusarnaldo115@gmail.com>',
-            to: ticket.purcharse,
-            subject: `¡Gracias por su compra! "${ticket.purcharse}"`,
-            html: `
+  correoTextEnCola = (ticket) => {
+    return {
+      from: '"Supermercado 👻" <jesusarnaldo115@gmail.com>',
+      to: ticket.purcharse,
+      subject: `¡Gracias por su compra! "${ticket.purcharse}"`,
+      html: `
             <html>
             <head>
                 <style>
@@ -66,12 +71,11 @@ export class TicketRepository {
                 </div>
             </body>
         </html>
-            `
-        };
-    }
+            `,
+    };
+  };
 
-    enviarCorreo = (transporter, correo) => {
-        return transporter.sendMail(correo);
-    }
-
+  enviarCorreo = (transporter, correo) => {
+    return transporter.sendMail(correo);
+  };
 }

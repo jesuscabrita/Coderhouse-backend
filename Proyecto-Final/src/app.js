@@ -1,12 +1,12 @@
 import express from "express";
 import handlebars from "express-handlebars";
 import socket from "./socket.js";
-import { MONGODB, PORT, SESSION_SECRET } from "./config.js";
+import { MONGODB, PORT, SESSION_SECRET } from "./config/config.js";
 import { connectToDatabase } from "./database/database.js";
 import MongoStore from "connect-mongo";
 import morgan from "morgan";
 import session from "express-session";
-import handlebar from 'handlebars'
+import handlebar from "handlebars";
 import cookieParser from "cookie-parser";
 import initializePassport from "./middlewares/passport.js";
 import passport from "passport";
@@ -21,10 +21,14 @@ import swaggerUiExpress from "swagger-ui-express";
 
 export const app = express();
 
-handlebar.registerHelper('sumTotalPrice', sumTotalPrice);
-handlebar.helpers.eq = function (a, b) { return a === b; };
-handlebar.helpers.and = function (a, b) { return a && b; };
-app.engine("handlebars", handlebars.engine())
+handlebar.registerHelper("sumTotalPrice", sumTotalPrice);
+handlebar.helpers.eq = function (a, b) {
+  return a === b;
+};
+handlebar.helpers.and = function (a, b) {
+  return a && b;
+};
+app.engine("handlebars", handlebars.engine());
 app.set("views", `${__dirname}/views`);
 app.set("view engine", "handlebars");
 
@@ -41,26 +45,26 @@ app.use(errorMiddleware);
 app.use(addLogger);
 initializePassport();
 app.use(
-    session({
-        store: MongoStore.create({
-            mongoUrl: MONGODB,
-            ttl: 360,
-        }),
-        resave: true,
-        saveUninitialized: false,
-        secret: SESSION_SECRET,
-    })
+  session({
+    store: MongoStore.create({
+      mongoUrl: MONGODB,
+      ttl: 360,
+    }),
+    resave: true,
+    saveUninitialized: false,
+    secret: SESSION_SECRET,
+  })
 );
 
 const swaggerOptions = {
-    definition: {
-        openapi: "3.0.1",
-        info: {
-            title: "Supermercado API",
-            description: "Documentacíon que soporta al sistema Supermercado",
-        },
+  definition: {
+    openapi: "3.0.1",
+    info: {
+      title: "Supermercado API",
+      description: "Documentacíon que soporta al sistema Supermercado",
     },
-    apis: [`${__dirname}/docs/**/*.yaml`],
+  },
+  apis: [`${__dirname}/docs/**/*.yaml`],
 };
 
 const specs = swaggerJSDoc(swaggerOptions);
@@ -69,8 +73,8 @@ app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 plugin_Rutas(app, cors());
 
 const httpServer = app.listen(PORT, () => {
-    console.log(`Servidor corre en el puerto ${PORT}`);
+  console.log(`Servidor corre en el puerto ${PORT}`);
 });
 
-socket.connect(httpServer)
+socket.connect(httpServer);
 connectToDatabase();
