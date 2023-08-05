@@ -1,8 +1,9 @@
 import Stripe from "stripe";
 import { TicketService } from "../dao/services/ticketService.js";
 import { UserService } from "../dao/services/userService.js";
+import { STRIPESECRETKEY } from "../config.js";
 
-const stripeSecretKey = "sk_test_51NbQJVK8VQreyVwzF1ff9ve1ZkmCFYEpyrfdTlCNwevxwI9Ttd04cZ2sRLzOX50bOG11IwmGlUwpGn62bs63RBYY00EdW8MGCs"; // Reemplaza con tu clave secreta de Stripe
+const stripeSecretKey = STRIPESECRETKEY;
 const stripe = new Stripe(stripeSecretKey);
 const ticketService = TicketService.getInstance();
 const userService = UserService.getInstance()
@@ -39,7 +40,6 @@ export const createTicket = async (req, res) => {
 export const createPago = async (req, res) => {
     const uid = req.params.uid;
     try {
-
         const user = await userService.getUserById(uid);
         const cartProducts = user?.cart?.products;
 

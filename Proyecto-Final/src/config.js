@@ -17,3 +17,4 @@ export const EMAIL_PASSWORD = checkEnv("EMAIL_PASSWORD");
 export const PORT_EMAIL = checkEnv("PORT_EMAIL");
 export const HOST_EMAIL = checkEnv("HOST_EMAIL");
 export const NODE_ENV = checkEnv("NODE_ENV");
+export const STRIPESECRETKEY = checkEnv("STRIPESECRETKEY")
